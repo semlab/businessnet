@@ -77,7 +77,6 @@ class ReuterPreproc(CorpusPreproc):
 
     def format_articles(self, file_content):
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
-        #article_contents = article_contents[3:4] #TODO: for testing to delete
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
             article_content = article_content.replace(" Reuter\n", "")
