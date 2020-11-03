@@ -8,6 +8,10 @@ class EntitieIdentifier:
         self.people = []
         self.places = []
 
+    def identity_ents(self, text):
+
+        pass
+
 
 class OpenIELinker:
     """

@@ -4,6 +4,23 @@ import spacy
 from utils import printProgressBar
 
 
+class LangModel:
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+        if LangModel.__instance is None:
+            LangModel()
+        else: 
+            return LangModel.__instance
+
+
+    def __init__(self):
+        if LangModel.__instance is not None:
+            raise Exception("Cannot instanciate another Language model")
+        else:
+            LangModel.__instance = spacy.load("en_core_web_sm")
+
 
 class CorpusPreproc:
 
@@ -98,8 +115,9 @@ class ReuterPreproc(CorpusPreproc):
 if __name__ == "__main__":
     datafolder = "../../data"
     local_datafolder= "data"
-    model = "en_core_web_sm" # TODO: set it as console param
-    nlp = spacy.load(model)
+    #model = "en_core_web_sm" # TODO: set it as console param
+    #nlp = spacy.load(model)
+    nlp = LangModel.get_instance()
     reuter_file = "{}/reuters21578-mld/reuters21578/reut2-000.sgm".format(datafolder)
 
     reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
