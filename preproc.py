@@ -12,14 +12,14 @@ class CorpusPreproc:
         pass
 
     
-    def formattext(self):
+    def formattext(self, save=True):
         """
         Removes unecessary content to keep plain text from the file.
         """
         pass
 
 
-    def filter_sents(self, lang_proc):
+    def filter_sents(self, lang_proc, save=True):
         """
         Keep sentences containing more than one named entities 
         (Organisation, Person, Location) names, one per line.
@@ -34,7 +34,8 @@ class CorpusPreproc:
             filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
             if (len(filtered_ents) > 1):
                 filtered_sents.append(sent.string.strip())
-        #TODO: save ? 
+        if save : 
+            self.savetext('w') # overwrites
         self.outfile_str = '\n'.join(filter_sents)
         return self.outfile_str
 
@@ -49,7 +50,7 @@ class CorpusPreproc:
 
 class ReuterPreproc(CorpusPreproc):
 
-    def formattext(self):
+    def formattext(self, save=True):
         from cStringIO import StringIO
         content_filepaths = [ os.path.join(root, name)
             for root, dirs, files in os.walk(self.location)
@@ -60,6 +61,8 @@ class ReuterPreproc(CorpusPreproc):
             text = __reuter_formattext(content_filepath)
             outfile_str.write(text)
         self.outfile_str = outfile_str.getvalue()
+        if save:
+            self.savetext('w')
         return self.outfile_str
         
 
