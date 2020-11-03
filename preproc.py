@@ -19,10 +19,30 @@ class CorpusPreproc:
         pass
 
 
+    def filter_sents(self, lang_proc):
+        """
+        Keep sentences containing more than one named entities 
+        (Organisation, Person, Location) names, one per line.
+        text : text containint sentences to be filtered.
+        lang_proc: language processor (initialized with spacy.load(<model>))
+        returns a list of filtrered sentences.
+        """
+        doc = lang_proc(text)
+        ents_filter = ['ORG', 'PERSON', 'GPE']
+        filtered_sents = []
+        for sent in doc.sents:
+            filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
+            if (len(filtered_ents) > 1):
+                filtered_sents.append(sent.string.strip())
+        #TODO: save ? 
+        self.outfile_str = '\n'.join(filter_sents)
+        return self.outfile_str
 
 
-    def savetext():
-        with open(self.outfilepath, 'a') as outfile:
+
+
+    def savetext(self, filemode='a'):
+        with open(self.outfilepath, filemode) as outfile:
             outfile.write(text)
 
 
@@ -52,6 +72,7 @@ class ReuterPreproc(CorpusPreproc):
         if file_content == None: 
             return None
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
+        #article_contents = article_contents[3:4] #TODO: for testing to delete
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
             article_content = article_content.replace(" Reuter\n", "")
@@ -63,8 +84,8 @@ class ReuterPreproc(CorpusPreproc):
             #article_content = article_content.replace("<", "")
             #article_content = article_content.replace(">", "")
             article_contents[idx] = article_content
-            # TODO: prepare cleaner content (remove tables and other non sentence
-            # content.)
+            # TODO: prepare cleaner content (remove tables and other non 
+            # sentence  content.)
         formatedtext = '\n'.join(article_contents)    
         return formatedtext
 
