@@ -1,6 +1,8 @@
 import re
 import spacy 
 
+from utils import printProgressBar
+
 
 
 class CorpusPreproc:
@@ -53,7 +55,8 @@ class ReuterPreproc(CorpusPreproc):
             for name in files 
             if name.endwith(".sgm") ]
         processedtext = ""
-        for content_filepath in content_filepaths:
+        for idx, content_filepath in enumerate(content_filepaths):
+            print("Formating file {}/{}".format(idx+1, len(content_filepaths)))
             text = __read_reuterfile(content_filepath)
             text = __reuter_formattext(text)
             processedtext.write(text)
@@ -72,7 +75,7 @@ class ReuterPreproc(CorpusPreproc):
         return file_content
         
 
-    def __reuter_formattext(self, file_content=None):
+    def __reuter_formattext(self, file_content):
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         #article_contents = article_contents[3:4] #TODO: for testing to delete
         for idx, article_content in enumerate(article_contents):
@@ -88,6 +91,7 @@ class ReuterPreproc(CorpusPreproc):
             article_contents[idx] = article_content
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
+            printProgressBar(idx+1, len(article_contents)) 
         file_content = '\n'.join(article_contents)    
         return file_content
 
