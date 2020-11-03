@@ -5,7 +5,7 @@ import spacy
 
 class CorpusPreproc:
 
-    def __init__(self, location, outputfilepath="out.txt"):
+    def __init__(self, location, outfilepath="out.txt"):
         self.location = location # location of the corpus (folder/file)
         self.outfilepath = outfilepath
         self.outfile_str = ""
@@ -16,18 +16,20 @@ class CorpusPreproc:
         """
         Removes unecessary content to keep plain text from the file.
         """
-        pass
+        raise NotImplementedError()
 
 
     def filter_sents(self, lang_proc, save=True):
         """
         Keep sentences containing more than one named entities 
         (Organisation, Person, Location) names, one per line.
-        text : text containint sentences to be filtered.
+        sentence to be filtered are took from the self.outfile_str member
+        save : determine if the result of the operation should be saved in 
+        the self.outfile
         lang_proc: language processor (initialized with spacy.load(<model>))
         returns a list of filtrered sentences.
         """
-        doc = lang_proc(text)
+        doc = lang_proc(self.outfile_str)
         ents_filter = ['ORG', 'PERSON', 'GPE']
         filtered_sents = []
         for sent in doc.sents:
@@ -38,8 +40,6 @@ class CorpusPreproc:
             self.savetext('w') # overwrites
         self.outfile_str = '\n'.join(filter_sents)
         return self.outfile_str
-
-
 
 
     def savetext(self, filemode='a'):
@@ -94,7 +94,6 @@ class ReuterPreproc(CorpusPreproc):
 
 
 
-#def prepoc_reuters(file_path=None):
 def gettext(file_path=None):
     """
     Removes unecessary content to keep plain text from the file.
@@ -171,12 +170,19 @@ if __name__ == "__main__":
     reuter_file = "{}/reuters21578-mld/reuters21578/reut2-000.sgm".format(datafolder)
     
 
-    print('Getting text...')
-    text = gettext(reuter_file)
-    print('Filtering sentences...')
-    sents = filter_sents(text, nlp)
-    print("{} sentences extracted.".format(len(sents)))
-    print('Saving sentences...')
-    savetext(sents, "{}/reuter_sentences.txt".format(local_datafolder))
-    print('Done...')
+    #print('Getting text...')
+    #text = gettext(reuter_file)
+    #print('Filtering sentences...')
+    #sents = filter_sents(text, nlp)
+    #print("{} sentences extracted.".format(len(sents)))
+    #print('Saving sentences...')
+    #savetext(sents, "{}/reuter_sentences.txt".format(local_datafolder))
+    #print('Done...')
 
+    reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
+    preproc = ReuterPreproc(reuter_folder, 
+            outfilepath="{}/reuter_sentences.txt".format(local_datafolder))
+    print('formatting text...')
+    preproc.formattext()
+    print('Filtering sentences...')
+    preproc.filter_sents(nlp)
