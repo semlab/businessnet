@@ -8,7 +8,7 @@ class CorpusPreproc:
     def __init__(self, location, outfilepath="out.txt"):
         self.location = location # location of the corpus (folder/file)
         self.outfilepath = outfilepath
-        self.outfile_str = ""
+        self.processedtext = ""
         pass
 
     
@@ -19,27 +19,23 @@ class CorpusPreproc:
         raise NotImplementedError()
 
 
-    def filter_sents(self, lang_proc, save=True):
+    def filter_sents(self, lang_proc):
         """
         Keep sentences containing more than one named entities 
         (Organisation, Person, Location) names, one per line.
-        sentence to be filtered are took from the self.outfile_str member
-        save : determine if the result of the operation should be saved in 
-        the self.outfile
+        sentence to be filtered are took from the self.processedtext member
         lang_proc: language processor (initialized with spacy.load(<model>))
         returns a list of filtrered sentences.
         """
-        doc = lang_proc(self.outfile_str)
+        doc = lang_proc(self.processedtext)
         ents_filter = ['ORG', 'PERSON', 'GPE']
         filtered_sents = []
         for sent in doc.sents:
             filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
             if (len(filtered_ents) > 1):
                 filtered_sents.append(sent.string.strip())
-        if save : 
-            self.savetext('w') # overwrites
-        self.outfile_str = '\n'.join(filter_sents)
-        return self.outfile_str
+        self.processedtext = '\n'.join(filter_sents)
+        return self.processedtext
 
 
     def savetext(self, filemode='a'):
@@ -50,23 +46,22 @@ class CorpusPreproc:
 
 class ReuterPreproc(CorpusPreproc):
 
-    def formattext(self, save=True):
+    def formattext(self):
         from cStringIO import StringIO
         content_filepaths = [ os.path.join(root, name)
             for root, dirs, files in os.walk(self.location)
             for name in files 
             if name.endwith(".sgm") ]
-        outfile_str
+        processedtext = ""
         for content_filepath in content_filepaths:
-            text = __reuter_formattext(content_filepath)
-            outfile_str.write(text)
-        self.outfile_str = outfile_str.getvalue()
-        if save:
-            self.savetext('w')
-        return self.outfile_str
-        
+            text = __read_reuterfile(content_filepath)
+            text = __reuter_formattext(text)
+            processedtext.write(text)
+        self.processedtext = processedtext.getvalue()
+        return self.processedtext
 
-    def __reuter_formattext(file_path=None):
+
+    def __read_reuterfile(self, file_path=None):
         if file_path == None: 
             return None
         file_content = None
@@ -74,6 +69,10 @@ class ReuterPreproc(CorpusPreproc):
             file_content = datafile.read()
         if file_content == None: 
             return None
+        return file_content
+        
+
+    def __reuter_formattext(self, file_content=None):
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         #article_contents = article_contents[3:4] #TODO: for testing to delete
         for idx, article_content in enumerate(article_contents):
@@ -89,8 +88,8 @@ class ReuterPreproc(CorpusPreproc):
             article_contents[idx] = article_content
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
-        formatedtext = '\n'.join(article_contents)    
-        return formatedtext
+        file_content = '\n'.join(article_contents)    
+        return file_content
 
 
 
