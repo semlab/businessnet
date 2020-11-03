@@ -12,10 +12,10 @@ def printProgressBar(iteration, total, prefix="", suffix="", decimals=1, length=
         fill        - Optional  : bar fill character
         printEnd    - Optional  : end character (e.g. '\r', '\r\n')
     """
-    percent = ("{0:.}" + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
-    printf(f'\r{prefix} |{bar}| {percent}% {suffix}', end=printEnd)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=printEnd)
     #print new line on complete
     if iteration == total:
         print()
