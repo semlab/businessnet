@@ -58,7 +58,7 @@ class ReuterPreproc(CorpusPreproc):
         for idx, content_filepath in enumerate(content_filepaths):
             print("Formating file {}/{}".format(idx+1, len(content_filepaths)))
             text = __read_reuterfile(content_filepath)
-            text = __reuter_formattext(text)
+            text = format_articles(text)
             processedtext.write(text)
         self.processedtext = processedtext.getvalue()
         return self.processedtext
@@ -75,7 +75,7 @@ class ReuterPreproc(CorpusPreproc):
         return file_content
         
 
-    def __reuter_formattext(self, file_content):
+    def format_articles(self, file_content):
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         #article_contents = article_contents[3:4] #TODO: for testing to delete
         for idx, article_content in enumerate(article_contents):
