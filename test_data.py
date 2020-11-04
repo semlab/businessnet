@@ -203,3 +203,16 @@ interest.
 &#3;</BODY></TEXT>
 </REUTERS>
 """
+
+
+
+REUTERS_SENTENCES_SAMPLE = """
+Some analysts said they have recommended BankAmerica delay its up to one-billion-dlr equity offering, which has yet to be approved by the Securities and Exchange Commission.
+BankAmerica stock fell this week, along with other banking issues, on the news that Brazil has suspended interest payments on a large portion of its foreign debt.
+A BankAmerica spokesman said SEC approval is taking longer than expected and
+"The circumstances at the time will determine what we do," said Arthur Miller, BankAmerica's Vice President for Financial Communications, when asked if BankAmerica would proceed with the offer immediately after it receives SEC approval.
+"I'd put it off as long as they conceivably could," said Lawrence Cohn, analyst with Merrill Lynch, Pierce, Fenner and Smith.
+Such an offering at a depressed stock price would mean a lower conversion price and more dilution to BankAmerica stock holders, noted Daniel Williams, analyst with Sutro Group.
+Nevertheless, BankAmerica, which holds about 2.70 billion dlrs in Brazilian loans, stands to lose 15-20 mln dlrs if the interest rate is reduced on the debt, and as much as 200 mln dlrs if Brazil pays no interest for a year, said Joseph Arsenio, analyst with Birr, Wilson and Co.
+With other major banks standing to lose even more than BankAmerica if Brazil fails to service its debt, the analysts said they expect the debt will be restructured, similar to way Mexico's debt was, minimizing losses to the creditor banks.
+"""

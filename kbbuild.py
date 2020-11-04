@@ -1,7 +1,7 @@
 from lang import LangModel
 
 
-class EntitieIdentifier:
+class EntityIdentifier:
 
     def __init__(self):
         self.organizations = []
@@ -19,7 +19,6 @@ class EntitieIdentifier:
             elif ent.label_ == 'GPE':
                 self.places.append(ent.text)
 
-    
     def save_ents(self):
         with open('./data/orgs.txt', 'w') as orgfile:
             for org in self.organizations:
