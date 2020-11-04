@@ -1,7 +1,7 @@
 import unittest
 from test import support
 from kbbuild import EntityIdentifier
-from test_data import REUTERS_SENTENCES_SAMPLE
+from tests.test_data import REUTERS_SENTENCES_SAMPLE
 
 
 class EntityIdentifierTestCase1(unittest.TestCase):
