@@ -8,8 +8,7 @@ class LangModel:
     def get_instance():
         if LangModel.__instance is None:
             LangModel()
-        else: 
-            return LangModel.__instance
+        return LangModel.__instance
 
 
     def __init__(self):
