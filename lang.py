@@ -16,3 +16,4 @@ class LangModel:
             raise Exception("Cannot instanciate another Language model")
         else:
             LangModel.__instance = spacy.load("en_core_web_sm")
+            LangModel.__instance.max_length = 20000000

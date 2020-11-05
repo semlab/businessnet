@@ -36,17 +36,19 @@ class CorpusPreproc:
         doc = lang_proc(self.processedtext)
         ents_filter = ['ORG', 'PERSON', 'GPE']
         filtered_sents = []
-        for sent in doc.sents:
+        sents_count = len(doc.sents)
+        for idx, sent in enumerate(doc.sents):
             filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
             if (len(filtered_ents) > 1):
                 filtered_sents.append(sent.string.strip())
+            printProgressBar(idx+1, sents_count)
         self.processedtext = '\n'.join(filter_sents)
         return self.processedtext
 
 
     def savetext(self, filemode='w'):
         with open(self.outfilepath, filemode) as outfile:
-            outfile.write(text)
+            outfile.write(self.processedtext)
 
 
 
@@ -59,10 +61,10 @@ class ReuterPreproc(CorpusPreproc):
             for name in files 
             if name.endswith(".sgm") ]
         processedtext = StringIO() 
+        file_count = len(content_filepaths)
         for idx, content_filepath in enumerate(content_filepaths):
-            print("Formating file {}/{}".format(idx+1, len(content_filepaths)))
             text = self.read_reuterfile(content_filepath)
-            text = self.format_articles(text)
+            text = self.format_articles(text, idx+1, file_count)
             processedtext.write(text)
         self.processedtext = processedtext.getvalue()
         return self.processedtext
@@ -77,8 +79,8 @@ class ReuterPreproc(CorpusPreproc):
                 file_content = datafile.read()
             except UnicodeDecodeError :
                 #TODO: use logging
-                print("WARNING: file skipped")
-                print("Error Decoding {}".format(file_path))
+                print("WARNING: Error Decoding {}, file skipped".format(
+                    file_path))
                 file_content = None
         if file_content == None: 
             return None
@@ -94,9 +96,8 @@ class ReuterPreproc(CorpusPreproc):
         """
         if file_content is None or file_content == "":
             return ""
-        progress_prefix=("File {}/{}".format(
-            file_index+1, 
-            file_count)) 
+        progress_prefix="File {}/{}, art. {}/{}"
+        article_count = len(article_contents)
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
@@ -111,8 +112,15 @@ class ReuterPreproc(CorpusPreproc):
             article_contents[idx] = article_content
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
-            printProgressBar(idx+1, len(article_contents), 
-                prefix=progress_prefix) 
+            #printProgressBar(idx+1, article_count, 
+            #    prefix=progress_prefix) 
+            printProgressBar(file_index+1, file_count, 
+                prefix=progress_prefix.format(
+                    file_index +1,
+                    file_count,
+                    idx+1,
+                    article_count
+                )) 
         file_content = '\n'.join(article_contents)    
         return file_content
 
