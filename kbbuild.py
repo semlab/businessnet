@@ -11,13 +11,19 @@ class EntityIdentifier:
     def identity_ents(self, text):
         nlp = LangModel.get_instance()
         doc = nlp(text)
+        orgs = []
+        people = []
+        places = []
         for ent in doc.ents:
             if ent.label_ == 'ORG':
-                self.organizations.append(ent.text)
+                orgs.append(ent.text)
             elif ent.label_ == 'PERSON':
-                self.people.append(ent.text)
+                people.append(ent.text)
             elif ent.label_ == 'GPE':
-                self.places.append(ent.text)
+                places.append(ent.text)
+        self.organizations = list(set(orgs))
+        self.people  = list(set(people))
+        self.places   = list(set(places))
 
     def save_ents(self):
         with open('./data/orgs.txt', 'w') as orgfile:

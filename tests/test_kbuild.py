@@ -9,6 +9,8 @@ class EntityIdentifierTestCase1(unittest.TestCase):
     def test_identify_ents(self):
         identifier = EntityIdentifier()
         identifier.identity_ents(REUTERS_SENTENCES_SAMPLE)
+        for ent in identifier.organizations:
+            print(ent)
         assert(len(identifier.organizations) > 0)
 
 
