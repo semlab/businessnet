@@ -25,7 +25,8 @@ class CorpusPreproc:
         raise NotImplementedError()
 
 
-    def filter_sents(self, lang_proc):
+    #def filter_sents(self, lang_proc):
+    def filter_sents(self, text):
         """
         Keep sentences containing more than one named entities 
         (Organisation, Person, Location) names, one per line.
@@ -33,17 +34,24 @@ class CorpusPreproc:
         lang_proc: language processor (initialized with spacy.load(<model>))
         returns a list of filtrered sentences.
         """
-        doc = lang_proc(self.processedtext)
+        #doc = lang_proc(self.processedtext)
+        #doc = lang_proc(text)
+        nlp = LangModel.get_instance()
+        doc = nlp(text)
         ents_filter = ['ORG', 'PERSON', 'GPE']
         filtered_sents = []
-        sents_count = len(doc.sents)
+        #sents_count = len(doc.sents)
+        #print("{} Sentences identified".format(sents_count))
         for idx, sent in enumerate(doc.sents):
             filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
             if (len(filtered_ents) > 1):
                 filtered_sents.append(sent.string.strip())
-            printProgressBar(idx+1, sents_count)
-        self.processedtext = '\n'.join(filter_sents)
-        return self.processedtext
+        filtered_text = '\n'.join(filtered_sents)
+        return filtered_text
+            #printProgressBar(idx+1, sents_count)
+        #self.processedtext = '\n'.join(filter_sents)
+        #return self.processedtext
+
 
 
     def savetext(self, filemode='w'):
@@ -64,7 +72,8 @@ class ReuterPreproc(CorpusPreproc):
         file_count = len(content_filepaths)
         for idx, content_filepath in enumerate(content_filepaths):
             text = self.read_reuterfile(content_filepath)
-            text = self.format_articles(text, idx+1, file_count)
+            text = self.format_articles(text, idx, file_count)
+            text = self.filter_sents(text)
             processedtext.write(text)
         self.processedtext = processedtext.getvalue()
         return self.processedtext
@@ -79,8 +88,11 @@ class ReuterPreproc(CorpusPreproc):
                 file_content = datafile.read()
             except UnicodeDecodeError :
                 #TODO: use logging
+                print()
+                print()
                 print("WARNING: Error Decoding {}, file skipped".format(
                     file_path))
+                print()
                 file_content = None
         if file_content == None: 
             return None
@@ -97,8 +109,8 @@ class ReuterPreproc(CorpusPreproc):
         if file_content is None or file_content == "":
             return ""
         progress_prefix="File {}/{}, art. {}/{}"
-        article_count = len(article_contents)
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
+        article_count = len(article_contents)
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
             article_content = article_content.replace(" Reuter\n", "")
@@ -114,9 +126,10 @@ class ReuterPreproc(CorpusPreproc):
             # sentence  content.)
             #printProgressBar(idx+1, article_count, 
             #    prefix=progress_prefix) 
-            printProgressBar(file_index+1, file_count, 
+            full_completion = file_count + 1
+            printProgressBar(file_index+1, full_completion, 
                 prefix=progress_prefix.format(
-                    file_index +1,
+                    file_index + (idx // article_count),
                     file_count,
                     idx+1,
                     article_count
@@ -136,6 +149,6 @@ if __name__ == "__main__":
     print('formatting text...')
     preproc.formattext()
     preproc.savetext()
-    print('Filtering sentences...')
-    preproc.filter_sents(nlp)
-    preproc.savetext()
+    #print('Filtering sentences...')
+    #preproc.filter_sents(nlp)
+    #preproc.savetext()
