@@ -42,7 +42,7 @@ class CorpusPreproc:
         return self.processedtext
 
 
-    def savetext(self, filemode='a'):
+    def savetext(self, filemode='w'):
         with open(self.outfilepath, filemode) as outfile:
             outfile.write(text)
 
@@ -100,10 +100,7 @@ class ReuterPreproc(CorpusPreproc):
 if __name__ == "__main__":
     datafolder = "../../data"
     local_datafolder= "data"
-    #model = "en_core_web_sm" # TODO: set it as console param
-    #nlp = spacy.load(model)
     nlp = LangModel.get_instance()
-    reuter_file = "{}/reuters21578-mld/reuters21578/reut2-000.sgm".format(datafolder)
 
     reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
     preproc = ReuterPreproc(reuter_folder, 
