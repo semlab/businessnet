@@ -1,5 +1,7 @@
+import os
 import re
 import spacy 
+from io import StringIO
 
 from lang import LangModel
 from utils import printProgressBar
@@ -51,22 +53,22 @@ class CorpusPreproc:
 class ReuterPreproc(CorpusPreproc):
 
     def formattext(self):
-        from cStringIO import StringIO
+        #from cStringIO import StringIO
         content_filepaths = [ os.path.join(root, name)
             for root, dirs, files in os.walk(self.location)
             for name in files 
-            if name.endwith(".sgm") ]
-        processedtext = ""
+            if name.endswith(".sgm") ]
+        processedtext = StringIO() 
         for idx, content_filepath in enumerate(content_filepaths):
             print("Formating file {}/{}".format(idx+1, len(content_filepaths)))
-            text = __read_reuterfile(content_filepath)
-            text = format_articles(text)
+            text = self.read_reuterfile(content_filepath)
+            text = self.format_articles(text)
             processedtext.write(text)
         self.processedtext = processedtext.getvalue()
         return self.processedtext
 
 
-    def __read_reuterfile(self, file_path=None):
+    def read_reuterfile(self, file_path=None):
         if file_path == None: 
             return None
         file_content = None
@@ -107,5 +109,7 @@ if __name__ == "__main__":
             outfilepath="{}/reuter_sentences.txt".format(local_datafolder))
     print('formatting text...')
     preproc.formattext()
+    preproc.savetext()
     print('Filtering sentences...')
     preproc.filter_sents(nlp)
+    preproc.savetext()
