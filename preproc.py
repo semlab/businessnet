@@ -94,6 +94,9 @@ class ReuterPreproc(CorpusPreproc):
         """
         if file_content is None or file_content == "":
             return ""
+        progress_prefix=("File {}/{}".format(
+            file_index+1, 
+            file_count)) 
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
@@ -108,7 +111,8 @@ class ReuterPreproc(CorpusPreproc):
             article_contents[idx] = article_content
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
-            printProgressBar(idx+1, len(article_contents)) 
+            printProgressBar(idx+1, len(article_contents), 
+                prefix=progress_prefix) 
         file_content = '\n'.join(article_contents)    
         return file_content
 
