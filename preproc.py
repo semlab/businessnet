@@ -73,13 +73,27 @@ class ReuterPreproc(CorpusPreproc):
             return None
         file_content = None
         with open(file_path, 'r') as datafile:
-            file_content = datafile.read()
+            try: 
+                file_content = datafile.read()
+            except UnicodeDecodeError :
+                #TODO: use logging
+                print("WARNING: file skipped")
+                print("Error Decoding {}".format(file_path))
+                file_content = None
         if file_content == None: 
             return None
         return file_content
         
 
-    def format_articles(self, file_content):
+    def format_articles(self, file_content, file_index=0, file_count=0):
+        """
+        @params:
+            file_content    - Required: file content to be formatted
+            file_index      - Optional: index of the current reuter articles file
+            file_count      - Optional: total number of files to be formatted
+        """
+        if file_content is None or file_content == "":
+            return ""
         article_contents = re.findall(r'<BODY>[\s\S]*?</BODY>', file_content)
         for idx, article_content in enumerate(article_contents):
             article_content = article_content.replace(".\n", ".<br/>")
