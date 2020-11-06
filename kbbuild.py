@@ -21,17 +21,30 @@ class EntityIdentifier:
                 people.append(ent.text)
             elif ent.label_ == 'GPE':
                 places.append(ent.text)
-        self.organizations = list(set(orgs))
-        self.people  = list(set(people))
-        self.places   = list(set(places))
+        orgs = list(set(orgs))
+        people = list(set(people))
+        places = list(set(places))
+        self.organizations.extend(orgs)
+        self.people.extend(people)
+        self.places.extend(places)
+
+    
+    def remove_duplicate(self):
+        self.organizations = list(set(self.organizations))
+        self.people = list(set(self.people))
+        self.places = list(set(self.places))
+
 
     def save_ents(self):
+        print("saving {} orgs".format(len(self.organizations)))
         with open('./data/orgs.txt', 'w') as orgfile:
             for org in self.organizations:
                 orgfile.write(org + '\n')
+        print("saving {} persons".format(len(self.people),))
         with open('./data/people.txt', 'w') as peoplefile:
             for person in self.people:
                 peoplefile.write(person + '\n')
+        print("saving {} places".format(len(self.places)))
         with open('./data/places.txt', 'w') as placesfile:
             for place in self.places:
                 placesfile.write(place + '\n')
@@ -59,3 +72,18 @@ class OpenIELinker:
         for idx, triplet in triplets:
             pass
         pass
+
+
+if __name__ == "__main__":
+    identifier = EntityIdentifier()
+    sents_count = 0
+    with open('./data/reuter_sentences.txt', 'r') as textfile:
+        text = textfile.readline()
+        while text :
+            sents_count = sents_count + 1
+            identifier.identity_ents(text) 
+            text = textfile.readline()
+            print(f'\r{sents_count} sentences processed', end='')
+    print()
+    identifier.remove_duplicate()
+    identifier.save_ents()
