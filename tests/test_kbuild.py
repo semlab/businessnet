@@ -18,8 +18,13 @@ class EdgeBuilderTestCase1(unittest.TestCase):
 
     def test_sent_edges_build(self):   
         openie_sample = OPENIE_SENTENCE_EXTRACTION.split('\n')
-        sentences = openie_sample[0]
+        sentence = openie_sample[0]
         extractions = openie_sample[1:]
+        ebuilder = EdgeBuilder()
+        edges = ebuilder.sent_edges_build(sentence, extractions)
+        print(edges)
+        assert(edges is not None)
+
 
 
 if __name__ == "__main__":
