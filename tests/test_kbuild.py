@@ -1,7 +1,7 @@
 import unittest
 from test import support
-from kbbuild import EntityIdentifier
-from tests.test_data import REUTERS_SENTENCES_SAMPLE
+from kbbuild import EntityIdentifier, EdgeBuilder
+from tests.test_data import REUTERS_SENTENCES_SAMPLE, OPENIE_SENTENCE_EXTRACTION
 
 
 class EntityIdentifierTestCase1(unittest.TestCase):
@@ -12,6 +12,14 @@ class EntityIdentifierTestCase1(unittest.TestCase):
         for ent in identifier.organizations:
             print(ent)
         assert(len(identifier.organizations) > 0)
+
+
+class EdgeBuilderTestCase1(unittest.TestCase):
+
+    def test_sent_edges_build(self):   
+        openie_sample = OPENIE_SENTENCE_EXTRACTION.split('\n')
+        sentences = openie_sample[0]
+        extractions = openie_sample[1:]
 
 
 if __name__ == "__main__":

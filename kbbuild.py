@@ -1,4 +1,5 @@
 from lang import LangModel
+from utils import printProgressBar
 
 
 class NodeType:
@@ -69,7 +70,7 @@ class EdgeBuilder:
     """
 
     def __init__(self): 
-        self.triplets = []
+        self.edges = []
        
 
     def edges_build(self, inputpath):
@@ -89,7 +90,10 @@ class EdgeBuilder:
                     sent_extracts.append(lines[line_iter])
                 line_iter += 1
             sent_edges = sent_edges_build(sent_txt, sent_extracts)
-            edges.extend(sent_edges_build(sent_edges)
+            edges.extend(sent_edges)
+            printProgressBar(line_iter, lines_count, 
+                prefix="Building Edges")
+            self.edges = edges
         return edges
 
 
@@ -150,3 +154,7 @@ if __name__ == "__main__":
     print()
     identifier.remove_duplicate()
     identifier.save_ents()
+    
+    # Edges 
+    ebuilder = EdgeBuilder()
+    ebuilder.

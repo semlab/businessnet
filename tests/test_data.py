@@ -216,3 +216,19 @@ Such an offering at a depressed stock price would mean a lower conversion price 
 Nevertheless, BankAmerica, which holds about 2.70 billion dlrs in Brazilian loans, stands to lose 15-20 mln dlrs if the interest rate is reduced on the debt, and as much as 200 mln dlrs if Brazil pays no interest for a year, said Joseph Arsenio, analyst with Birr, Wilson and Co.
 With other major banks standing to lose even more than BankAmerica if Brazil fails to service its debt, the analysts said they expect the debt will be restructured, similar to way Mexico's debt was, minimizing losses to the creditor banks.
 """
+
+
+OPENIE_SENTENCE_EXTRACTION  """
+Nevertheless, BankAmerica, which holds about 2.70 billion dlrs in Brazilian loans, stands to lose 15-20 mln dlrs if the interest rate is reduced on the debt, and as much as 200 mln dlrs if Brazil pays no interest for a year, said Joseph Arsenio, analyst with Birr, Wilson and Co.
+0.92 (Brazil; pays; no interest; T:for a year)
+0.95 (as much as 200 mln; dlrs; if Brazil pays no interest for a year)
+0.91 Context(Nevertheless , BankAmerica , which holds about 2.70 billion dlrs in Brazilian loans , stands to lose 15-20 mln dlrs as much as 200 mln dlrs said,List([0, 184))):(BankAmerica; stands; to lose 15-20 mln dlrs)
+0.98 (Joseph Arsenio; said; Nevertheless , BankAmerica , which holds about 2.70 billion dlrs in Brazilian loans , stands to lose 15-20 mln dlrs as much as 200 mln dlrs)
+0.38 (Joseph Arsenio; [is] analyst with; Co.)
+0.38 (Joseph Arsenio; [is] analyst with; Wilson)
+0.38 (Joseph Arsenio; [is] analyst with; Birr)
+0.94 Context(Nevertheless , BankAmerica , which holds about 2.70 billion dlrs in Brazilian loans , stands to lose 15-20 mln dlrs said,List([0, 166))):(BankAmerica; stands; to lose 15-20 mln dlrs if the interest rate is reduced on the debt)
+0.98 (Joseph Arsenio; said; Nevertheless , BankAmerica , which holds about 2.70 billion dlrs in Brazilian loans , stands to lose 15-20 mln dlrs)
+0.91 (the interest rate; is reduced; on the debt)
+0.93 (BankAmerica; holds; about 2.70 billion dlrs; L:in Brazilian loans)
+"""
