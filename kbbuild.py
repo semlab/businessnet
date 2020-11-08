@@ -75,6 +75,7 @@ class EdgeBuilder:
     def edges_build(self, inputpath):
         edges = []
         lines = []
+        extact_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         with open(inputpath, 'r') as inputfile:
             lines = inputfile.readlines()
         line_iter = 0
@@ -84,7 +85,7 @@ class EdgeBuilder:
             line_iter += 1
             sent_extracts = []
             while line_iter < lines_count and lines[line_iter] != "":
-                if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction) is not None:
+                if extract_pattern.match(extraction) is not None:
                     sent_extracts.append(lines[line_iter])
                 line_iter += 1
             sent_edges = sent_edges_build(sent_txt, sent_extracts)
@@ -102,23 +103,22 @@ class EdgeBuilder:
         if len(ents) < 2:
             return edges
         for extraction in extractions:
-            if extract_pattern.match(extraction) is not None:
-                extract_str = extraction[4:-1]
-                extract_parts = extract_str.split(';')
-                ent1 = None
-                ent2 = None
-                rel = None
-                for ent in ents:
-                    if ent in extract_parts[0]:
-                        #TODO: retrieve unique id of ent
-                        ent1 = ent
-                    elif ent in extract_parts[2]:
-                        #TODO: retrieve unique id of ent
-                        ent2 = ent
-                #TODO: Retrieve edge type trade/other id
-                rel = EdgeType.OTHER
-                if ent1 is not None and ent2 is not None and rel is not None:
-                    edges.append([ent1, rel, ent2])
+            extract_str = extraction[4:-1]
+            extract_parts = extract_str.split(';')
+            ent1 = None
+            ent2 = None
+            rel = None
+            for ent in ents:
+                if ent in extract_parts[0]:
+                    #TODO: retrieve unique id of ent
+                    ent1 = ent
+                elif ent in extract_parts[2]:
+                    #TODO: retrieve unique id of ent
+                    ent2 = ent
+            #TODO: Retrieve edge type trade/other id
+            rel = EdgeType.OTHER
+            if ent1 is not None and ent2 is not None and rel is not None:
+                edges.append([ent1, rel, ent2])
         return edges
 
 
