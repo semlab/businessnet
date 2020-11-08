@@ -74,28 +74,31 @@ class EdgeBuilder:
 
     def edges_build(self, inputpath):
         edges = []
-        with open(inputpath) as inputfile:
-            line = inputfile.readline()
-            while line != "" or is not None: 
-                if line != "":
-                    sent_txt = line
-                    nlp = LangModel.get_instance()
-                    doc  = nlp(sent_txt)
-                    ents = [e for e in sent.ents if e.label_ in NodeType.Set
-                        for sent in doc.sents ]
-                    
-
-                    if re.match()
-                    ents_idx = 0
-
+        lines = []
+        with open(inputpath, 'r') as inputfile:
+            lines = inputfile.readlines()
+        line_iter = 0
+        lines_count = len(line_iter)
+        while line_iter < lines_count:
+            sent_txt = lines[line_iter]
+            line_iter += 1
+            sent_extracts = []
+            while line_iter < lines_count and lines[line_iter] != "":
+                if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction) is not None:
+                    sent_extracts.append(lines[line_iter])
+                line_iter += 1
+            edges.extend(sent_edges_build(sent_txt, sent_extracts))
+        return edges
 
 
     def sent_edges_build(self, sent_txt, extractions):
+        edges = []
         nlp = LangModel.get_instance()
         doc  = nlp(sent_txt)
         ents = [e for e in sent.ents if e.label_ in ents_filter
             for sent in doc.sents ]
-        edges = []
+        if len(ents) < 2:
+            return edges
         for extraction in extractions:
             if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction):
                 extract_str = extraction[4:-1]
