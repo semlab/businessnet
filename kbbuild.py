@@ -68,9 +68,9 @@ class EdgeBuilder:
     Build relationships from OpenIE output
     """
 
-    def __init__(self):
+    def __init__(self): 
         self.triplets = []
-
+       
 
     def edges_build(self, inputpath):
         edges = []
@@ -87,12 +87,14 @@ class EdgeBuilder:
                 if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction) is not None:
                     sent_extracts.append(lines[line_iter])
                 line_iter += 1
-            edges.extend(sent_edges_build(sent_txt, sent_extracts))
+            sent_edges = sent_edges_build(sent_txt, sent_extracts)
+            edges.extend(sent_edges_build(sent_edges)
         return edges
 
 
     def sent_edges_build(self, sent_txt, extractions):
         edges = []
+        extact_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         nlp = LangModel.get_instance()
         doc  = nlp(sent_txt)
         ents = [e for e in sent.ents if e.label_ in ents_filter
@@ -100,7 +102,7 @@ class EdgeBuilder:
         if len(ents) < 2:
             return edges
         for extraction in extractions:
-            if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction):
+            if extract_pattern.match(extraction) is not None:
                 extract_str = extraction[4:-1]
                 extract_parts = extract_str.split(';')
                 ent1 = None
