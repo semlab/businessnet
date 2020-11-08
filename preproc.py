@@ -5,6 +5,7 @@ from io import StringIO
 
 from lang import LangModel
 from utils import printProgressBar
+from kbbuild import NodeType
 
 
 
@@ -38,12 +39,12 @@ class CorpusPreproc:
         #doc = lang_proc(text)
         nlp = LangModel.get_instance()
         doc = nlp(text)
-        ents_filter = ['ORG', 'PERSON', 'GPE'] # TODO: centralize
+        #ents_filter = ['ORG', 'PERSON', 'GPE'] # TODO: centralize
         filtered_sents = []
         #sents_count = len(doc.sents)
         #print("{} Sentences identified".format(sents_count))
         for idx, sent in enumerate(doc.sents):
-            filtered_ents = [e for e in sent.ents if e.label_ in ents_filter]
+            filtered_ents = [e for e in sent.ents if e.label_ in NodeType.Set]
             if (len(filtered_ents) > 1):
                 filtered_sents.append(sent.string.strip())
         filtered_text = '\n'.join(filtered_sents)
