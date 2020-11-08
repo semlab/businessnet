@@ -38,7 +38,7 @@ class CorpusPreproc:
         #doc = lang_proc(text)
         nlp = LangModel.get_instance()
         doc = nlp(text)
-        ents_filter = ['ORG', 'PERSON', 'GPE']
+        ents_filter = ['ORG', 'PERSON', 'GPE'] # TODO: centralize
         filtered_sents = []
         #sents_count = len(doc.sents)
         #print("{} Sentences identified".format(sents_count))
