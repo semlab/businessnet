@@ -72,7 +72,8 @@ class EdgeBuilder:
         self.triplets = []
 
 
-    def edge_search(self, inputpath):
+    def edges_build(self, inputpath):
+        edges = []
         with open(inputpath) as inputfile:
             line = inputfile.readline()
             while line != "" or is not None: 
@@ -89,7 +90,7 @@ class EdgeBuilder:
 
 
 
-    def edges_build(self, sent_txt, extractions):
+    def sent_edges_build(self, sent_txt, extractions):
         nlp = LangModel.get_instance()
         doc  = nlp(sent_txt)
         ents = [e for e in sent.ents if e.label_ in ents_filter
