@@ -1,6 +1,18 @@
 from lang import LangModel
 
 
+class NodeType:
+    ORG = "ORG"
+    PERSON = "PERSON"
+    PLACE = "GPE"
+    Set = {"ORG", "PERSON", "GPE"}
+
+
+class EdgeType:
+    TRADE = "TRADE"
+    OTHER = "OTHER"
+    Set = {"TRADE", "OTHER"}
+
 class EntityIdentifier:
 
     def __init__(self):
@@ -51,7 +63,7 @@ class EntityIdentifier:
 
 
 
-class OpenIELinker:
+class EdgeBuilder:
     """
     Build relationships from OpenIE output
     """
@@ -60,7 +72,52 @@ class OpenIELinker:
         self.triplets = []
 
 
-    def triplets_filter(inputfilepath, outputfilepath):
+    def edge_search(self, inputpath):
+        with open(inputpath) as inputfile:
+            line = inputfile.readline()
+            while line != "" or is not None: 
+                if line != "":
+                    sent_txt = line
+                    nlp = LangModel.get_instance()
+                    doc  = nlp(sent_txt)
+                    ents = [e for e in sent.ents if e.label_ in NodeType.Set
+                        for sent in doc.sents ]
+                    
+
+                    if re.match()
+                    ents_idx = 0
+
+
+
+    def edges_build(self, sent_txt, extractions):
+        nlp = LangModel.get_instance()
+        doc  = nlp(sent_txt)
+        ents = [e for e in sent.ents if e.label_ in ents_filter
+            for sent in doc.sents ]
+        edges = []
+        for extraction in extractions:
+            if re.match(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$", extraction):
+                extract_str = extraction[4:-1]
+                extract_parts = extract_str.split(';')
+                ent1 = None
+                ent2 = None
+                rel = None
+                for ent in ents:
+                    if ent in extract_parts[0]:
+                        #TODO: retrieve unique id of ent
+                        ent1 = ent
+                    elif ent in extract_parts[2]:
+                        #TODO: retrieve unique id of ent
+                        ent2 = ent
+                #TODO: Retrieve edge type trade/other id
+                rel = EdgeType.OTHER
+                if ent1 is not None and ent2 is not None and rel is not None:
+                    edges.append([ent1, rel, ent2])
+        return edges
+
+
+
+    def triplets_filter(self, inputfilepath, outputfilepath):
         """
         Filter OpenIE output file to keep
         interesting triplets
