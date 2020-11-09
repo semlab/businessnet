@@ -206,8 +206,7 @@ interest.
 
 
 
-REUTERS_SENTENCES_SAMPLE = """
-Some analysts said they have recommended BankAmerica delay its up to one-billion-dlr equity offering, which has yet to be approved by the Securities and Exchange Commission.
+REUTERS_SENTENCES_SAMPLE = """Some analysts said they have recommended BankAmerica delay its up to one-billion-dlr equity offering, which has yet to be approved by the Securities and Exchange Commission.
 BankAmerica stock fell this week, along with other banking issues, on the news that Brazil has suspended interest payments on a large portion of its foreign debt.
 A BankAmerica spokesman said SEC approval is taking longer than expected and
 "The circumstances at the time will determine what we do," said Arthur Miller, BankAmerica's Vice President for Financial Communications, when asked if BankAmerica would proceed with the offer immediately after it receives SEC approval.
@@ -218,8 +217,7 @@ With other major banks standing to lose even more than BankAmerica if Brazil fai
 """
 
 
-OPENIE_SENTENCE_EXTRACTION  """
-Nevertheless, BankAmerica, which holds about 2.70 billion dlrs in Brazilian loans, stands to lose 15-20 mln dlrs if the interest rate is reduced on the debt, and as much as 200 mln dlrs if Brazil pays no interest for a year, said Joseph Arsenio, analyst with Birr, Wilson and Co.
+OPENIE_SENTENCE_EXTRACTION  = """Nevertheless, BankAmerica, which holds about 2.70 billion dlrs in Brazilian loans, stands to lose 15-20 mln dlrs if the interest rate is reduced on the debt, and as much as 200 mln dlrs if Brazil pays no interest for a year, said Joseph Arsenio, analyst with Birr, Wilson and Co.
 0.92 (Brazil; pays; no interest; T:for a year)
 0.95 (as much as 200 mln; dlrs; if Brazil pays no interest for a year)
 0.91 Context(Nevertheless , BankAmerica , which holds about 2.70 billion dlrs in Brazilian loans , stands to lose 15-20 mln dlrs as much as 200 mln dlrs said,List([0, 184))):(BankAmerica; stands; to lose 15-20 mln dlrs)

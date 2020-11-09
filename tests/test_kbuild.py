@@ -22,8 +22,7 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         extractions = openie_sample[1:]
         ebuilder = EdgeBuilder()
         edges = ebuilder.sent_edges_build(sentence, extractions)
-        print(edges)
-        assert(edges is not None)
+        assert(len(edges) == 3)
 
 
 

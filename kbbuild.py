@@ -1,3 +1,4 @@
+import re
 from lang import LangModel
 from utils import printProgressBar
 
@@ -98,11 +99,10 @@ class EdgeBuilder:
 
     def sent_edges_build(self, sent_txt, extractions):
         edges = []
-        extact_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
+        extract_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         nlp = LangModel.get_instance()
         doc  = nlp(sent_txt)
-        ents = [e for e in sent.ents if e.label_ in ents_filter
-            for sent in doc.sents ]
+        ents = [e for e in doc.ents if e.label_ in NodeType.Set] 
         if len(ents) < 2:
             return edges
         for extraction in extractions:
@@ -113,10 +113,10 @@ class EdgeBuilder:
                 ent2 = None
                 rel = None
                 for ent in ents:
-                    if ent in extract_parts[0]:
+                    if ent.string in extract_parts[0]:
                         #TODO: retrieve unique id of ent
                         ent1 = ent
-                    elif ent in extract_parts[2]:
+                    elif ent.string in extract_parts[2]:
                         #TODO: retrieve unique id of ent
                         ent2 = ent
                 #TODO: Retrieve edge type trade/other id
