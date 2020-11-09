@@ -1,4 +1,5 @@
 import re
+import json
 from lang import LangModel
 from utils import printProgressBar
 
@@ -139,6 +140,51 @@ class EdgeBuilder:
         for idx, triplet in triplets:
             pass
         pass
+
+
+class EntityIDLookup:
+
+    def __init__(self):
+        self.ents_dict = {}
+    
+    def load_ents_dict(self, inputpath):
+        with open(inputpath, 'r') as inputfile:
+            file_content = inputfile.read()
+            self.ents_dict = json.loads(file_content)
+
+    def save_ents_dict(self, outputpath):
+        with open(outputpath, 'w') as outputfile:
+            file_content = json.dump(self.ents_dict)
+            outputfile.write(file_content)
+        
+    def get_id(ent_name):
+        return self.ents_dict(ent_name)
+
+    def id_from_name(self, ent_name):
+        id_label = ent_name.lower().strip()
+        if id_label.startswith("the "): 
+            id_label = id_label[4:]
+        elif id_label.startswith("an "):
+            id_label = id_label[3:]
+       id_label = id_label.replace("'s", "") 
+       id_label = id_label.replace(".", "") 
+       id_label = id_label.replace("<", "") 
+       id_label = id_label.replace(">", "") 
+       id_label = id_label.replace("\"", "") 
+       id_label = id_label.replace("'", "") 
+       id_label = id_label.replace(" ", "-") 
+       id_label = id_label.replace(" ", "") # remove all left spaces
+        
+       return id_label
+
+
+class GraphBuilder:
+
+    def __init__(self):
+        pass
+
+    
+
 
 
 if __name__ == "__main__":
