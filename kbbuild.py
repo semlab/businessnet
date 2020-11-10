@@ -43,6 +43,21 @@ class EntityIdentifier:
         self.people.extend(people)
         self.places.extend(places)
 
+    def id_from_name(self, ent_name):
+        id_label = ent_name.lower().strip()
+        if id_label.startswith("the "): 
+            id_label = id_label[4:]
+        elif id_label.startswith("an "):
+            id_label = id_label[3:]
+        id_label = id_label.replace("'s", "") 
+        id_label = id_label.replace(".", "") 
+        id_label = id_label.replace("<", "") 
+        id_label = id_label.replace(">", "") 
+        id_label = id_label.replace("\"", "") 
+        id_label = id_label.replace("'", "") 
+        id_label = id_label.replace(" ", "-") 
+        id_label = id_label.replace(" ", "") # remove all left spaces
+        return id_label
     
     def remove_duplicate(self):
         self.organizations = list(set(self.organizations))
@@ -142,6 +157,7 @@ class EdgeBuilder:
         pass
 
 
+# TODO: delete not necessary
 class EntityIDLookup:
 
     def __init__(self):
@@ -160,29 +176,12 @@ class EntityIDLookup:
     def get_id(ent_name):
         return self.ents_dict(ent_name)
 
-    def id_from_name(self, ent_name):
-        id_label = ent_name.lower().strip()
-        if id_label.startswith("the "): 
-            id_label = id_label[4:]
-        elif id_label.startswith("an "):
-            id_label = id_label[3:]
-       id_label = id_label.replace("'s", "") 
-       id_label = id_label.replace(".", "") 
-       id_label = id_label.replace("<", "") 
-       id_label = id_label.replace(">", "") 
-       id_label = id_label.replace("\"", "") 
-       id_label = id_label.replace("'", "") 
-       id_label = id_label.replace(" ", "-") 
-       id_label = id_label.replace(" ", "") # remove all left spaces
-        
-       return id_label
 
 
 class GraphBuilder:
 
     def __init__(self):
         pass
-
     
 
 

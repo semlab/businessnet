@@ -14,6 +14,12 @@ class EntityIdentifierTestCase1(unittest.TestCase):
         assert(len(identifier.organizations) > 0)
 
 
+    def test_id_from_name(self):
+        identifier = EntityIdentifier()
+        name = "an International Development Association"
+        id_name  = identifier.id_from_name(name)
+        assert(id_name == "international-development-association")
+
 class EdgeBuilderTestCase1(unittest.TestCase):
 
     def test_sent_edges_build(self):   
