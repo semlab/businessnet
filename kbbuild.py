@@ -19,18 +19,18 @@ class EdgeType:
 
 class Node:
 
-    def __init__(self):
-        self.id = None
-        self.type = None
-        self.label = None
+    def __init__(self, ent_id, ent_type, ent_label):
+        self.ent_id = ent_id
+        self.ent_type = ent_type
+        self.ent_label = ent_label 
 
 class Edge:
 
-    def __init__(self):
-        self.ent1_id = None
-        self.ent2_id = None
-        self.type = None
-        self.label = None
+    def __init__(self, ent1_id, ent2_id, rel_type, rel_label):
+        self.ent1_id = ent1_id
+        self.ent2_id = ent2_id
+        self.rel_type = rel_type
+        self.rel_label = rel_label
 
 class EntityIdentifier:
 
