@@ -183,26 +183,6 @@ class EdgeBuilder:
         pass
 
 
-# TODO: delete not necessary
-class EntityIDLookup:
-
-    def __init__(self):
-        self.ents_dict = {}
-    
-    def load_ents_dict(self, inputpath):
-        with open(inputpath, 'r') as inputfile:
-            file_content = inputfile.read()
-            self.ents_dict = json.loads(file_content)
-
-    def save_ents_dict(self, outputpath):
-        with open(outputpath, 'w') as outputfile:
-            file_content = json.dump(self.ents_dict)
-            outputfile.write(file_content)
-        
-    def get_id(ent_name):
-        return self.ents_dict(ent_name)
-
-
 
 class GraphBuilder:
 
