@@ -15,9 +15,8 @@ class EntityIdentifierTestCase1(unittest.TestCase):
 
 
     def test_id_from_name(self):
-        identifier = EntityIdentifier()
         name = "an International Development Association"
-        id_name  = identifier.id_from_name(name)
+        id_name  = EntityIdentifier.id_from_name(name)
         assert(id_name == "international-development-association")
 
 class EdgeBuilderTestCase1(unittest.TestCase):
@@ -28,6 +27,9 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         extractions = openie_sample[1:]
         ebuilder = EdgeBuilder()
         edges = ebuilder.sent_edges_build(sentence, extractions)
+        print("******EDGES TEST*******")
+        print(edges)
+        print("**********************")
         assert(len(edges) == 3)
 
 

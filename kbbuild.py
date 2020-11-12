@@ -16,6 +16,22 @@ class EdgeType:
     OTHER = "OTHER"
     Set = {"TRADE", "OTHER"}
 
+
+class Node:
+
+    def __init__(self):
+        self.id = None
+        self.type = None
+        self.label = None
+
+class Edge:
+
+    def __init__(self):
+        self.ent1_id = None
+        self.ent2_id = None
+        self.type = None
+        self.label = None
+
 class EntityIdentifier:
 
     def __init__(self):
@@ -30,12 +46,14 @@ class EntityIdentifier:
         people = []
         places = []
         for ent in doc.ents:
+            ent_id = self.id_from_name(ent.text)
+            if ent_id == "": continue
             if ent.label_ == 'ORG':
-                orgs.append(ent.text)
+                orgs.append(ent_id)
             elif ent.label_ == 'PERSON':
-                people.append(ent.text)
+                people.append(ent_id)
             elif ent.label_ == 'GPE':
-                places.append(ent.text)
+                places.append(ent_id)
         orgs = list(set(orgs))
         people = list(set(people))
         places = list(set(places))
@@ -43,7 +61,9 @@ class EntityIdentifier:
         self.people.extend(people)
         self.places.extend(places)
 
-    def id_from_name(self, ent_name):
+    #def id_from_name(self, ent_name):
+    @staticmethod
+    def id_from_name(ent_name):
         id_label = ent_name.lower().strip()
         if id_label.startswith("the "): 
             id_label = id_label[4:]
@@ -51,12 +71,18 @@ class EntityIdentifier:
             id_label = id_label[3:]
         id_label = id_label.replace("'s", "") 
         id_label = id_label.replace(".", "") 
+        id_label = id_label.replace(",", "") 
+        id_label = id_label.replace("(", "") 
+        id_label = id_label.replace(")", "") 
         id_label = id_label.replace("<", "") 
         id_label = id_label.replace(">", "") 
         id_label = id_label.replace("\"", "") 
+        id_label = id_label.replace("/", "-") 
         id_label = id_label.replace("'", "") 
         id_label = id_label.replace(" ", "-") 
         id_label = id_label.replace(" ", "") # remove all left spaces
+        id_label = id_label.strip("- ")
+        #TODO: remove trailing dash and multiple dashes
         return id_label
     
     def remove_duplicate(self):
