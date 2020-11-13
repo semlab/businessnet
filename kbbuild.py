@@ -24,6 +24,11 @@ class Node:
         self.ent_type = ent_type
         self.ent_label = ent_label 
 
+class NodeJSONEncoder(JSONEncoder):
+
+    def default(self, o):
+        return o.__dict__
+
 class Edge:
 
     def __init__(self, ent1_id, ent2_id, rel_type, rel_label):
@@ -38,6 +43,7 @@ class EntityIdentifier:
         self.organizations = []
         self.people = []
         self.places = []
+        self.nodes = []
 
     def identity_ents(self, text):
         nlp = LangModel.get_instance()
@@ -45,21 +51,27 @@ class EntityIdentifier:
         orgs = []
         people = []
         places = []
+        nodes = []
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
-            if ent_id == "": continue
+            if len(ent_id) < 3: continue
             if ent.label_ == 'ORG':
                 orgs.append(ent_id)
             elif ent.label_ == 'PERSON':
                 people.append(ent_id)
             elif ent.label_ == 'GPE':
                 places.append(ent_id)
-        orgs = list(set(orgs))
-        people = list(set(people))
-        places = list(set(places))
+            # for file
+            if ent.label_ in NodeType.Set:
+                nodes.append(Node(ent_id, ent.label_, ent.text))
+        #orgs = list(set(orgs))
+        #people = list(set(people))
+        #places = list(set(places))
         self.organizations.extend(orgs)
         self.people.extend(people)
         self.places.extend(places)
+        self.nodes.extend(nodes)
+
 
     #def id_from_name(self, ent_name):
     @staticmethod
@@ -89,6 +101,19 @@ class EntityIdentifier:
         self.organizations = list(set(self.organizations))
         self.people = list(set(self.people))
         self.places = list(set(self.places))
+        # making nodes elements uniques
+        nodes = self.nodes
+        start_idx = 0
+        while start_idx < len(nodes):
+            node_idx = start_idx + 1
+            while node_idx < len(nodes):
+                if nodes[start_idx].ent_id == nodes[node_idx].ent_id:
+                    del nodes[node_idx]
+                else:
+                    node_idx += 1
+            start_idx += 1
+            printProgressBar(start_idx, len(nodes), prefix="Unifiying nodes ")
+        self.nodes = nodes
 
 
     def save_ents(self):
@@ -104,6 +129,9 @@ class EntityIdentifier:
         with open('./data/places.txt', 'w') as placesfile:
             for place in self.places:
                 placesfile.write(place + '\n')
+        print("saving {} nodes".format(len(self.nodes)))
+        with open("./data/nodes.txt", 'w') as nodesfile:
+            json.dump(self.nodes, nodesfile, indent=6)
 
 
 
@@ -205,4 +233,5 @@ if __name__ == "__main__":
     print()
     identifier.remove_duplicate()
     identifier.save_ents()
+    
     
