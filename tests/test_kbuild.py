@@ -30,7 +30,7 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         assert(len(edges) == 3)
 
 
-class Graphbuilder(unittest.TesCase):
+class GraphBuilderTestCase(unittest.TestCase):
 
     def test_build(self):
         nodes = []
@@ -39,11 +39,11 @@ class Graphbuilder(unittest.TesCase):
         nodes.append(Node("san-francisco", "GPE", "San Francisco"))
         edges = []
         edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
-        edges.append(Edge("apple", "san-francisco", "has Headquarter in"))
+        edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
         builder = GraphBuilder()
-        G = builder.builder()
-        assert(G.number_of_nodes(), 3)
-        assert(G.number_of_edges(), 2)
+        G = builder.build(nodes, edges)
+        assert(G.number_of_nodes() == 3)
+        assert(G.number_of_edges() == 2)
 
 
 

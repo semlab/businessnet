@@ -221,16 +221,16 @@ class EdgeBuilder:
 class GraphBuilder:
 
     def __init__(self):
-        self.G = nx.Graph
+        self.G = nx.Graph()
 
     def build(self, nodes, edges):
-        for node in nodes:
-            G.add_node((node.id, node.__dict__))
-        for edge in edges:
-            G.add_edge((edge.ent1_id, edge.ent2_id, {
+        nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
+        edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
                 "type": edge.rel_type
-            }))
+            }) for edge in edges]
+        self.G.add_nodes_from(nodes_list)
+        self.G.add_edges_from(edges_list)
         return self.G
     
 
