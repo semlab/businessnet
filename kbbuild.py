@@ -23,11 +23,10 @@ class Node:
         self.ent_id = ent_id
         self.ent_type = ent_type
         self.ent_label = ent_label 
+    
+    def __str__(self):
+        return str(self.__dict__)
 
-class NodeJSONEncoder(JSONEncoder):
-
-    def default(self, o):
-        return o.__dict__
 
 class Edge:
 
@@ -36,6 +35,9 @@ class Edge:
         self.ent2_id = ent2_id
         self.rel_type = rel_type
         self.rel_label = rel_label
+
+    def __str__(self):
+        return str(self.__dict__)
 
 class EntityIdentifier:
 
@@ -131,7 +133,7 @@ class EntityIdentifier:
                 placesfile.write(place + '\n')
         print("saving {} nodes".format(len(self.nodes)))
         with open("./data/nodes.txt", 'w') as nodesfile:
-            json.dump(self.nodes, nodesfile, indent=6)
+            json.dump(self.nodes, nodesfile, indent=6, default=str)
 
 
 
