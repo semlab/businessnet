@@ -1,6 +1,6 @@
 import unittest
 from test import support
-from kbbuild import EntityIdentifier, EdgeBuilder
+from kbbuild import EntityIdentifier, EdgeBuilder, GraphBuilder, Node, Edge
 from tests.test_data import REUTERS_SENTENCES_SAMPLE, OPENIE_SENTENCE_EXTRACTION
 
 
@@ -28,6 +28,23 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         ebuilder = EdgeBuilder()
         edges = ebuilder.sent_edges_build(sentence, extractions)
         assert(len(edges) == 3)
+
+
+class Graphbuilder(unittest.TesCase):
+
+    def test_build(self):
+        nodes = []
+        nodes.append(Node("apple", "ORG", "Apple"))
+        nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
+        nodes.append(Node("san-francisco", "GPE", "San Francisco"))
+        edges = []
+        edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
+        edges.append(Edge("apple", "san-francisco", "has Headquarter in"))
+        builder = GraphBuilder()
+        G = builder.builder()
+        assert(G.number_of_nodes(), 3)
+        assert(G.number_of_edges(), 2)
+
 
 
 

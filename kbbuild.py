@@ -227,7 +227,10 @@ class GraphBuilder:
         for node in nodes:
             G.add_node((node.id, node.__dict__))
         for edge in edges:
-            pass
+            G.add_edge((edge.ent1_id, edge.ent2_id, {
+                "label": edge.rel_label,
+                "type": edge.rel_type
+            }))
         return self.G
     
 
