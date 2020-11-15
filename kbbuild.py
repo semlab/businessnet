@@ -189,14 +189,14 @@ class EdgeBuilder:
                 for ent in ents:
                     if ent.string in extract_parts[0]:
                         #TODO: retrieve unique id of ent
-                        ent1_id = EntityIdentifier.id_from_name(ent)
+                        ent1_id = EntityIdentifier.id_from_name(ent.string)
                     elif ent.string in extract_parts[2]:
                         #TODO: retrieve unique id of ent
-                        ent2_id = EntityIdentifier.id_from_name(ent)
+                        ent2_id = EntityIdentifier.id_from_name(ent.string)
                 rel_label = extract_parts[1]
                 #TODO: Retrieve edge type trade/other id
                 rel_type = EdgeType.OTHER
-                if ent1_id is not None and ent2_id is not None and rel is not None:
+                if ent1_id is not None and ent2_id is not None and rel_type is not None:
                     edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
                     edges.append(edge)
         return edges
@@ -227,7 +227,7 @@ class GraphBuilder:
         for node in nodes:
             G.add_node((node.id, node.__dict__))
         for edge in edges:
-
+            pass
         return self.G
     
 
