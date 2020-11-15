@@ -1,4 +1,6 @@
 import unittest
+import matplotlib.pyplot as plt
+import networkx as nx
 from test import support
 from kbbuild import EntityIdentifier, EdgeBuilder, GraphBuilder, Node, Edge
 from tests.test_data import REUTERS_SENTENCES_SAMPLE, OPENIE_SENTENCE_EXTRACTION
@@ -42,6 +44,8 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
         builder = GraphBuilder()
         G = builder.build(nodes, edges)
+        nx.draw(G, with_labels=True)
+        plt.show()
         assert(G.number_of_nodes() == 3)
         assert(G.number_of_edges() == 2)
 

@@ -1,6 +1,7 @@
 import re
 import json
 import networkx as nx
+import matplotlib.pyplot as plt
 from lang import LangModel
 from utils import printProgressBar
 
@@ -153,7 +154,7 @@ class EdgeBuilder:
         with open(inputpath, 'r') as inputfile:
             lines = inputfile.readlines()
         line_iter = 0
-        lines_count = len(line_iter)
+        lines_count = len(lines)
         while line_iter < lines_count:
             sent_txt = lines[line_iter]
             line_iter += 1 # to point sentence's extractions
@@ -161,10 +162,11 @@ class EdgeBuilder:
             while line_iter < lines_count and lines[line_iter] != "":
                 sent_extracts.append(lines[line_iter])
                 line_iter += 1
-            sent_edges = sent_edges_build(sent_txt, sent_extracts)
+            sent_edges = self.sent_edges_build(sent_txt, sent_extracts)
             edges.extend(sent_edges)
             printProgressBar(line_iter, lines_count, 
                 prefix="Building Edges")
+            print()
             line_iter += 1 # to point next sentence
         self.edges = edges
         return edges
@@ -255,7 +257,12 @@ if __name__ == "__main__":
     edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
     nodes = identifier.nodes
 
+
+    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
+    nx.draw(G, with_labels=True)
+    plt.show()
+
     
     
