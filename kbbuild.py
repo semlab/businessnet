@@ -1,5 +1,6 @@
 import re
 import json
+import networkx as nx
 from lang import LangModel
 from utils import printProgressBar
 
@@ -181,20 +182,23 @@ class EdgeBuilder:
             if extract_pattern.match(extraction) is not None:
                 extract_str = extraction[4:-1]
                 extract_parts = extract_str.split(';')
-                ent1 = None
-                ent2 = None
-                rel = None
+                ent1_id = None
+                ent2_id = None
+                rel_label = None
+                rel_type = None
                 for ent in ents:
                     if ent.string in extract_parts[0]:
                         #TODO: retrieve unique id of ent
-                        ent1 = ent
+                        ent1_id = EntityIdentifier.id_from_name(ent)
                     elif ent.string in extract_parts[2]:
                         #TODO: retrieve unique id of ent
-                        ent2 = ent
+                        ent2_id = EntityIdentifier.id_from_name(ent)
+                rel_label = extract_parts[1]
                 #TODO: Retrieve edge type trade/other id
-                rel = EdgeType.OTHER
-                if ent1 is not None and ent2 is not None and rel is not None:
-                    edges.append([ent1, rel, ent2])
+                rel_type = EdgeType.OTHER
+                if ent1_id is not None and ent2_id is not None and rel is not None:
+                    edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
+                    edges.append(edge)
         return edges
 
 
@@ -217,12 +221,20 @@ class EdgeBuilder:
 class GraphBuilder:
 
     def __init__(self):
-        pass
+        self.G = nx.Graph
+
+    def build(self, nodes, edges):
+        for node in nodes:
+            G.add_node((node.id, node.__dict__))
+        for edge in edges:
+
+        return self.G
     
 
 
 
 if __name__ == "__main__":
+    # TODO: Verify existence of input data
     identifier = EntityIdentifier()
     sents_count = 0
     with open('./data/reuter_sentences.txt', 'r') as textfile:
@@ -235,5 +247,12 @@ if __name__ == "__main__":
     print()
     identifier.remove_duplicate()
     identifier.save_ents()
+
+    ebuilder = EdgeBuilder()
+    edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    nodes = identifier.nodes
+
+    gbuilder = GraphBuilder()
+    G = gbuilder.build(nodes, edges)
     
     
