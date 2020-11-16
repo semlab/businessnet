@@ -149,7 +149,8 @@ class EdgeBuilder:
        
 
     def edges_build(self, inputpath):
-        edges = []
+        edges_dict = {}
+        #edges = []
         lines = []
         with open(inputpath, 'r') as inputfile:
             lines = inputfile.readlines()
@@ -159,20 +160,25 @@ class EdgeBuilder:
             sent_txt = lines[line_iter]
             line_iter += 1 # to point sentence's extractions
             sent_extracts = []
-            while line_iter < lines_count and lines[line_iter] != "":
+            while line_iter < lines_count and lines[line_iter] != "\n":
                 sent_extracts.append(lines[line_iter])
                 line_iter += 1
             sent_edges = self.sent_edges_build(sent_txt, sent_extracts)
-            edges.extend(sent_edges)
-            printProgressBar(line_iter, lines_count, 
-                prefix="Building Edges")
+            for edge in sent_edges:
+                edge_key = "{}_{}".format(edge.ent1_id, edge.ent2_id)
+                if edge_key  not in edges_dict:
+                    edges_dict[edge_key] = edge
+            #edges.extend(sent_edges)
+            printProgressBar(line_iter, lines_count)
+                #,prefix="{} Edges detected".format(len(edges)))
             print()
             line_iter += 1 # to point next sentence
-        self.edges = edges
-        return edges
+        self.edges = edges_dict.values()
+        return self.edges
 
 
     def sent_edges_build(self, sent_txt, extractions):
+        print("{} with {} extractions".format(sent_txt, len(extractions)))
         edges = []
         extract_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         nlp = LangModel.get_instance()
@@ -219,6 +225,10 @@ class EdgeBuilder:
         pass
 
 
+    def remove_duplicate(self):
+        pass
+
+
 
 class GraphBuilder:
 
@@ -240,29 +250,35 @@ class GraphBuilder:
 
 if __name__ == "__main__":
     # TODO: Verify existence of input data
-    identifier = EntityIdentifier()
-    sents_count = 0
-    with open('./data/reuter_sentences.txt', 'r') as textfile:
-        text = textfile.readline()
-        while text :
-            sents_count = sents_count + 1
-            identifier.identity_ents(text) 
-            text = textfile.readline()
-            print(f'\r{sents_count} sentences processed', end='')
-    print()
-    identifier.remove_duplicate()
-    identifier.save_ents()
+#    identifier = EntityIdentifier()
+#    sents_count = 0
+#    with open('./data/reuter_sentences.txt', 'r') as textfile:
+#        text = textfile.readline()
+#        while text :
+#            sents_count = sents_count + 1
+#            identifier.identity_ents(text) 
+#            text = textfile.readline()
+#            print(f'\r{sents_count} sentences processed', end='')
+#    print()
+#    identifier.remove_duplicate()
+#    identifier.save_ents()
+#    nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
     edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
-    nodes = identifier.nodes
+    print("Number of edges: {}".format(len(edges)))
 
 
-    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-    gbuilder = GraphBuilder()
-    G = gbuilder.build(nodes, edges)
-    nx.draw(G, with_labels=True)
-    plt.show()
+
+    # TODO remove
+#    nodes = nodes[:1000]
+#    edges = edges[:1000]
+
+#    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
+#    gbuilder = GraphBuilder()
+#    G = gbuilder.build(nodes, edges)
+#    nx.draw(G, with_labels=True)
+#    plt.show()
 
     
     
