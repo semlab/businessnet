@@ -2,7 +2,8 @@ import unittest
 import matplotlib.pyplot as plt
 import networkx as nx
 from test import support
-from kbbuild import EntityIdentifier, EdgeBuilder, GraphBuilder, Node, Edge
+from models import Node, Edge
+from kbbuild import EntityIdentifier, EdgeBuilder, GraphBuilder
 from tests.test_data import REUTERS_SENTENCES_SAMPLE, OPENIE_SENTENCE_EXTRACTION
 
 
