@@ -11,9 +11,9 @@ class EntityIdentifierTestCase1(unittest.TestCase):
     def test_identify_ents(self):
         identifier = EntityIdentifier()
         identifier.identity_ents(REUTERS_SENTENCES_SAMPLE)
-        for ent in identifier.organizations:
-            print(ent)
-        assert(len(identifier.organizations) > 0)
+        #for ent in identifier.nodes:
+        #    print(ent)
+        assert(len(identifier.nodes) > 0)
 
 
     def test_id_from_name(self):
@@ -42,8 +42,8 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges = []
         edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
         edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
-        builder = GraphBuilder()
-        G = builder.build(nodes, edges)
+        builder = GraphBuilder(nodes, edges)
+        G = builder.build()
         nx.draw(G, with_labels=True)
         plt.show()
         assert(G.number_of_nodes() == 3)

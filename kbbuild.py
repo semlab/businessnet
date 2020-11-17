@@ -51,41 +51,22 @@ class Edge:
 class EntityIdentifier:
 
     def __init__(self):
-        self.organizations = []
-        self.people = []
-        self.places = []
         self.nodes = []
 
     def identity_ents(self, text):
         nlp = LangModel.get_instance()
         nodes_dict = {}
-#        nodes = []
         doc = nlp(text)
-#        orgs = []
-#        people = []
-#        places = []
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
             if len(ent_id) < 3: continue
-#            if ent.label_ == 'ORG':
-#                orgs.append(ent_id)
-#            elif ent.label_ == 'PERSON':
-#                people.append(ent_id)
-#            elif ent.label_ == 'GPE':
-#                places.append(ent_id)
-#            if len(ent_id) < 3 and ent.label_ in NodeType.Set and ent_id not in nodes_dict:
             if ent.label_ in NodeType.Set and ent_id not in nodes_dict:
-                #nodes.append(Node(ent_id, ent.label_, ent.text))
                 nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text)
-#        self.organizations.extend(orgs)
-#        self.people.extend(people)
-#        self.places.extend(places)
         nodes = list(nodes_dict.values())
         self.nodes.extend(nodes)
         return self.nodes
 
 
-    #def id_from_name(self, ent_name):
     @staticmethod
     def id_from_name(ent_name):
         id_label = ent_name.lower().strip()
@@ -130,18 +111,6 @@ class EntityIdentifier:
 
 
     def save_ents(self):
-#        print("saving {} orgs".format(len(self.organizations)))
-#        with open('./data/orgs.txt', 'w') as orgfile:
-#            for org in self.organizations:
-#                orgfile.write(org + '\n')
-#        print("saving {} persons".format(len(self.people),))
-#        with open('./data/people.txt', 'w') as peoplefile:
-#            for person in self.people:
-#                peoplefile.write(person + '\n')
-#        print("saving {} places".format(len(self.places)))
-#        with open('./data/places.txt', 'w') as placesfile:
-#            for place in self.places:
-#                placesfile.write(place + '\n')
         print("saving {} nodes".format(len(self.nodes)))
         with open("./data/nodes.txt", 'w') as nodesfile:
             json.dump(self.nodes, nodesfile, indent=6, default=str)
@@ -177,9 +146,7 @@ class EdgeBuilder:
                 edge_key = "{}_{}".format(edge.ent1_id, edge.ent2_id)
                 if edge_key  not in edges_dict:
                     edges_dict[edge_key] = edge
-            #edges.extend(sent_edges)
             printProgressBar(line_iter, lines_count)
-                #,prefix="{} Edges detected".format(len(edges)))
             line_iter += 1 # to point next sentence
         print()
         edges = list(edges_dict.values())
@@ -205,10 +172,8 @@ class EdgeBuilder:
                 rel_type = None
                 for ent in ents:
                     if ent.string in extract_parts[0]:
-                        #TODO: retrieve unique id of ent
                         ent1_id = EntityIdentifier.id_from_name(ent.string)
                     elif ent.string in extract_parts[2]:
-                        #TODO: retrieve unique id of ent
                         ent2_id = EntityIdentifier.id_from_name(ent.string)
                 rel_label = extract_parts[1]
                 #TODO: Retrieve edge type trade/other id
