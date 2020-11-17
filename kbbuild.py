@@ -25,6 +25,13 @@ class Node:
         self.ent_id = ent_id
         self.ent_type = ent_type
         self.ent_label = ent_label 
+
+    @staticmethod
+    def color(ent_type):
+        if ent_type == 'PERSON': return 'red'
+        elif ent_type == 'ORG': return 'blue'
+        elif ent_type == 'GPE': return 'green'
+        else: return 'gray'
     
     def __str__(self):
         return str(self.__dict__)
@@ -51,30 +58,31 @@ class EntityIdentifier:
 
     def identity_ents(self, text):
         nlp = LangModel.get_instance()
+        nodes_dict = {}
+#        nodes = []
         doc = nlp(text)
-        orgs = []
-        people = []
-        places = []
-        nodes = []
+#        orgs = []
+#        people = []
+#        places = []
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
             if len(ent_id) < 3: continue
-            if ent.label_ == 'ORG':
-                orgs.append(ent_id)
-            elif ent.label_ == 'PERSON':
-                people.append(ent_id)
-            elif ent.label_ == 'GPE':
-                places.append(ent_id)
-            # for file
-            if ent.label_ in NodeType.Set:
-                nodes.append(Node(ent_id, ent.label_, ent.text))
-        #orgs = list(set(orgs))
-        #people = list(set(people))
-        #places = list(set(places))
-        self.organizations.extend(orgs)
-        self.people.extend(people)
-        self.places.extend(places)
+#            if ent.label_ == 'ORG':
+#                orgs.append(ent_id)
+#            elif ent.label_ == 'PERSON':
+#                people.append(ent_id)
+#            elif ent.label_ == 'GPE':
+#                places.append(ent_id)
+#            if len(ent_id) < 3 and ent.label_ in NodeType.Set and ent_id not in nodes_dict:
+            if ent.label_ in NodeType.Set and ent_id not in nodes_dict:
+                #nodes.append(Node(ent_id, ent.label_, ent.text))
+                nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text)
+#        self.organizations.extend(orgs)
+#        self.people.extend(people)
+#        self.places.extend(places)
+        nodes = list(nodes_dict.values())
         self.nodes.extend(nodes)
+        return self.nodes
 
 
     #def id_from_name(self, ent_name):
@@ -101,6 +109,7 @@ class EntityIdentifier:
         #TODO: remove trailing dash and multiple dashes
         return id_label
     
+    # TODO: delete useless
     def remove_duplicate(self):
         self.organizations = list(set(self.organizations))
         self.people = list(set(self.people))
@@ -121,18 +130,18 @@ class EntityIdentifier:
 
 
     def save_ents(self):
-        print("saving {} orgs".format(len(self.organizations)))
-        with open('./data/orgs.txt', 'w') as orgfile:
-            for org in self.organizations:
-                orgfile.write(org + '\n')
-        print("saving {} persons".format(len(self.people),))
-        with open('./data/people.txt', 'w') as peoplefile:
-            for person in self.people:
-                peoplefile.write(person + '\n')
-        print("saving {} places".format(len(self.places)))
-        with open('./data/places.txt', 'w') as placesfile:
-            for place in self.places:
-                placesfile.write(place + '\n')
+#        print("saving {} orgs".format(len(self.organizations)))
+#        with open('./data/orgs.txt', 'w') as orgfile:
+#            for org in self.organizations:
+#                orgfile.write(org + '\n')
+#        print("saving {} persons".format(len(self.people),))
+#        with open('./data/people.txt', 'w') as peoplefile:
+#            for person in self.people:
+#                peoplefile.write(person + '\n')
+#        print("saving {} places".format(len(self.places)))
+#        with open('./data/places.txt', 'w') as placesfile:
+#            for place in self.places:
+#                placesfile.write(place + '\n')
         print("saving {} nodes".format(len(self.nodes)))
         with open("./data/nodes.txt", 'w') as nodesfile:
             json.dump(self.nodes, nodesfile, indent=6, default=str)
@@ -171,14 +180,14 @@ class EdgeBuilder:
             #edges.extend(sent_edges)
             printProgressBar(line_iter, lines_count)
                 #,prefix="{} Edges detected".format(len(edges)))
-            print()
             line_iter += 1 # to point next sentence
-        self.edges = edges_dict.values()
+        print()
+        edges = list(edges_dict.values())
+        self.edges = edges
         return self.edges
 
 
     def sent_edges_build(self, sent_txt, extractions):
-        print("{} with {} extractions".format(sent_txt, len(extractions)))
         edges = []
         extract_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         nlp = LangModel.get_instance()
@@ -232,10 +241,14 @@ class EdgeBuilder:
 
 class GraphBuilder:
 
-    def __init__(self):
+    def __init__(self, nodes, edges):
         self.G = nx.Graph()
+        self.nodes = nodes
+        self.edges = edges
 
-    def build(self, nodes, edges):
+    def build(self):
+        nodes = self.nodes
+        edges = self.edges
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
@@ -244,25 +257,60 @@ class GraphBuilder:
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
         return self.G
+
+    def subgraph(self, node_type):
+        if node_type not in NodeType.Set:
+            return None
+        orgs_nodes = [node in G.nodes] #if node['ent_type'] == node_type ]
+        return self.G.subgraph(orgs_nodes)
+
     
+# for tests in the shell
+def build_the_graph():
+    identifier = EntityIdentifier()
+    sents_count = 0
+    with open('./data/reuter_sentences.txt', 'r') as textfile:
+        text = textfile.readline()
+        while text :
+            sents_count = sents_count + 1
+            identifier.identity_ents(text) 
+            text = textfile.readline()
+            print(f'\r{sents_count} sentences processed', end='')
+    print()
+#    identifier.remove_duplicate()
+    identifier.save_ents()
+    nodes = identifier.nodes
+
+    ebuilder = EdgeBuilder()
+    edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    print("Number of edges: {}".format(len(edges)))
+
+    # TODO remove
+    #nodes = nodes[:1000]
+    #edges = edges[:1000]
+
+    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
+    gbuilder = GraphBuilder(nodes, edges)
+    G = gbuilder.build()
+    return G
 
 
 
 if __name__ == "__main__":
     # TODO: Verify existence of input data
-#    identifier = EntityIdentifier()
-#    sents_count = 0
-#    with open('./data/reuter_sentences.txt', 'r') as textfile:
-#        text = textfile.readline()
-#        while text :
-#            sents_count = sents_count + 1
-#            identifier.identity_ents(text) 
-#            text = textfile.readline()
-#            print(f'\r{sents_count} sentences processed', end='')
-#    print()
+    identifier = EntityIdentifier()
+    sents_count = 0
+    with open('./data/reuter_sentences.txt', 'r') as textfile:
+        text = textfile.readline()
+        while text :
+            sents_count = sents_count + 1
+            identifier.identity_ents(text) 
+            text = textfile.readline()
+            print(f'\r{sents_count} sentences processed', end='')
+    print()
 #    identifier.remove_duplicate()
-#    identifier.save_ents()
-#    nodes = identifier.nodes
+    identifier.save_ents()
+    nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
     edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
@@ -271,14 +319,21 @@ if __name__ == "__main__":
 
 
     # TODO remove
-#    nodes = nodes[:1000]
-#    edges = edges[:1000]
+    #nodes = nodes[:1000]
+    #edges = edges[:1000]
 
-#    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-#    gbuilder = GraphBuilder()
-#    G = gbuilder.build(nodes, edges)
-#    nx.draw(G, with_labels=True)
-#    plt.show()
+    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
+    gbuilder = GraphBuilder(nodes, edges)
+    G = gbuilder.build()
+    #color_map = []
+    #for node in G:
+    #    color = Node.color( node['ent_type'])
+    #    color_map.append(color)
+    #nx.draw(G, node_color=color_map)#, with_labels=True)
+
+
+    nx.draw(G, with_labels=False)
+    plt.show()
 
     
     
