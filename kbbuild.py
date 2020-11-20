@@ -190,7 +190,12 @@ class GraphBuilder:
     def subgraph(self, node_type):
         if node_type not in NodeType.Set:
             return None
-        nodes_subset = [node in G.nodes] #if node['ent_type'] == node_type ]
+        nodes_subset
+        for node_id in self.G:
+            node_data = G.nodes[node_id]
+            if node_data['ent_type'] == node_type:
+                nodes_subset.append(node_id)
+        #nodes_subset = [node_id in G.nodes if G.nodes[node_id]['ent_type'] == node_type ]
         return self.G.subgraph(nodes_subset)
     
     def save_graph(self, filename):
