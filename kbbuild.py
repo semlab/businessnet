@@ -165,7 +165,7 @@ class GraphBuilder:
 
     def __init__(self):
         self.G = nx.Graph()
-        self.colormap = None
+        self.color_map = []
 
     def build(self, nodes, edges):
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
@@ -176,6 +176,16 @@ class GraphBuilder:
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
         return self.G
+
+
+    def build_colormap(self):
+        for node_id in self.G:
+            node_data = G.nodes[node_id]
+            ent_type = node_data['ent_type']
+            color = Node.color(ent_type)
+            self.color_map.append(color)
+        pass
+
 
     def subgraph(self, node_type):
         if node_type not in NodeType.Set:
