@@ -1,4 +1,4 @@
-
+import json
 
 class NodeType:
     ORG = "ORG"
@@ -41,3 +41,15 @@ class Edge:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+class NodeEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if issinstance(obj, Node):
+            return {
+                'ent_id': obj.ent1_id,
+                'ent_type': obj.ent_type,
+                'ent_label': obj.ent_label
+            }
+        return json.JSONEncoder(self, obj)

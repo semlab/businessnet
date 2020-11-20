@@ -2,6 +2,7 @@ import re
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
+from networkx.readwrite import json_graph
 from lang import LangModel
 from models import Node, Edge, NodeType, EdgeType
 from utils import printProgressBar
@@ -79,7 +80,6 @@ class EdgeBuilder:
     """
     Build relationships from OpenIE output
     """
-
     def __init__(self): 
         self.edges = []
        
@@ -142,7 +142,6 @@ class EdgeBuilder:
         return edges
 
 
-
     def triplets_filter(self, inputfilepath, outputfilepath):
         """
         Filter OpenIE output file to keep
@@ -166,6 +165,7 @@ class GraphBuilder:
 
     def __init__(self, nodes, edges):
         self.G = nx.Graph()
+        # TODO remove nodes and edges attr
         self.nodes = nodes
         self.edges = edges
 
@@ -186,6 +186,16 @@ class GraphBuilder:
             return None
         orgs_nodes = [node in G.nodes] #if node['ent_type'] == node_type ]
         return self.G.subgraph(orgs_nodes)
+    
+    def save_graph(self, filename):
+        data = json_graph.node_link_data(self.G)
+        file_content = json.dumps(data)
+        with open(filenanme, 'w') as outfile: 
+            outfile.write(file_content)
+    
+
+
+
 
     
 # for tests in the shell
