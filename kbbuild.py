@@ -180,8 +180,8 @@ class GraphBuilder:
     def subgraph(self, node_type):
         if node_type not in NodeType.Set:
             return None
-        orgs_nodes = [node in G.nodes] #if node['ent_type'] == node_type ]
-        return self.G.subgraph(orgs_nodes)
+        nodes_subset = [node in G.nodes] #if node['ent_type'] == node_type ]
+        return self.G.subgraph(nodes_subset)
     
     def save_graph(self, filename):
         data = json_graph.node_link_data(self.G)
@@ -254,6 +254,7 @@ if __name__ == "__main__":
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
+    gbuilder.save_graph("./data/graph_node_link.json")
     #color_map = []
     #for node in G:
     #    color = Node.color( node['ent_type'])
@@ -261,8 +262,8 @@ if __name__ == "__main__":
     #nx.draw(G, node_color=color_map)#, with_labels=True)
 
 
-    nx.draw(G, with_labels=False)
-    plt.show()
+    #nx.draw(G, with_labels=False)
+    #plt.show()
 
     
     
