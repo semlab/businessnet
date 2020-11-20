@@ -43,8 +43,8 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges = []
         edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
         edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
-        builder = GraphBuilder(nodes, edges)
-        G = builder.build()
+        builder = GraphBuilder()
+        G = builder.build(nodes, edges)
         nx.draw(G, with_labels=True)
         plt.show()
         assert(G.number_of_nodes() == 3)

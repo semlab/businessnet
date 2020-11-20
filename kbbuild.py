@@ -163,15 +163,11 @@ class EdgeBuilder:
 
 class GraphBuilder:
 
-    def __init__(self, nodes, edges):
+    def __init__(self):
         self.G = nx.Graph()
-        # TODO remove nodes and edges attr
-        self.nodes = nodes
-        self.edges = edges
+        self.colormap = None
 
-    def build(self):
-        nodes = self.nodes
-        edges = self.edges
+    def build(self, nodes, edges):
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
@@ -193,6 +189,12 @@ class GraphBuilder:
         with open(filenanme, 'w') as outfile: 
             outfile.write(file_content)
     
+    def load_graph(self, filename):
+        file_content = ""
+        with open(filename, 'r') as infile:
+            file_content = infile.read()
+        data = json.loads(file_content)
+        self.G = json_graph.node_link_graph(data)
 
 
 
@@ -218,18 +220,18 @@ def build_the_graph():
     edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
     print("Number of edges: {}".format(len(edges)))
 
-    # TODO remove
-    #nodes = nodes[:1000]
-    #edges = edges[:1000]
-
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-    gbuilder = GraphBuilder(nodes, edges)
-    G = gbuilder.build()
+    gbuilder = GraphBuilder()
+    G = gbuilder.build(nodes, edges)
     return G
 
 
 
 if __name__ == "__main__":
+    # --sentences="sentences inpout text file"
+    # --extractions="openie extractions"
+    # --openie-run="openie run command (for external call)"
+    # --output="graph output file name"
     # TODO: Verify existence of input data
     identifier = EntityIdentifier()
     sents_count = 0
@@ -249,15 +251,9 @@ if __name__ == "__main__":
     edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
     print("Number of edges: {}".format(len(edges)))
 
-
-
-    # TODO remove
-    #nodes = nodes[:1000]
-    #edges = edges[:1000]
-
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-    gbuilder = GraphBuilder(nodes, edges)
-    G = gbuilder.build()
+    gbuilder = GraphBuilder()
+    G = gbuilder.build(nodes, edges)
     #color_map = []
     #for node in G:
     #    color = Node.color( node['ent_type'])
