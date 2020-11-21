@@ -190,9 +190,9 @@ class GraphBuilder:
     def subgraph(self, node_type):
         if node_type not in NodeType.Set:
             return None
-        nodes_subset
+        nodes_subset = []
         for node_id in self.G:
-            node_data = G.nodes[node_id]
+            node_data = self.G.nodes[node_id]
             if node_data['ent_type'] == node_type:
                 nodes_subset.append(node_id)
         #nodes_subset = [node_id in G.nodes if G.nodes[node_id]['ent_type'] == node_type ]
@@ -201,7 +201,7 @@ class GraphBuilder:
     def save_graph(self, filename):
         data = json_graph.node_link_data(self.G)
         file_content = json.dumps(data)
-        with open(filenanme, 'w') as outfile: 
+        with open(filename, 'w') as outfile: 
             outfile.write(file_content)
     
     def load_graph(self, filename):

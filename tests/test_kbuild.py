@@ -35,14 +35,17 @@ class EdgeBuilderTestCase1(unittest.TestCase):
 
 class GraphBuilderTestCase(unittest.TestCase):
 
+
     def test_build(self):
         nodes = []
         nodes.append(Node("apple", "ORG", "Apple"))
         nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
         nodes.append(Node("san-francisco", "GPE", "San Francisco"))
+        nodes.append(Node("google", "ORG", "Google"))
         edges = []
         edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
         edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
+        edges.append(Edge("google", "san-francisco", "OTHER", "has Headquarter in"))
         builder = GraphBuilder()
         G = builder.build(nodes, edges)
         nx.draw(G, with_labels=True)
