@@ -50,25 +50,6 @@ class EntityIdentifier:
         #TODO: remove trailing dash and multiple dashes
         return id_label
     
-    # TODO: delete useless
-    def remove_duplicate(self):
-        self.organizations = list(set(self.organizations))
-        self.people = list(set(self.people))
-        self.places = list(set(self.places))
-        # making nodes elements uniques
-        nodes = self.nodes
-        start_idx = 0
-        while start_idx < len(nodes):
-            node_idx = start_idx + 1
-            while node_idx < len(nodes):
-                if nodes[start_idx].ent_id == nodes[node_idx].ent_id:
-                    del nodes[node_idx]
-                else:
-                    node_idx += 1
-            start_idx += 1
-            printProgressBar(start_idx, len(nodes), prefix="Unifiying nodes ")
-        self.nodes = nodes
-
 
     def save_ents(self):
         print("saving {} nodes".format(len(self.nodes)))
@@ -156,10 +137,6 @@ class EdgeBuilder:
         pass
 
 
-    def remove_duplicate(self):
-        pass
-
-
 
 class GraphBuilder:
 
@@ -227,7 +204,6 @@ def build_the_graph():
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()
-#    identifier.remove_duplicate()
     identifier.save_ents()
     nodes = identifier.nodes
 
@@ -258,7 +234,6 @@ if __name__ == "__main__":
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()
-#    identifier.remove_duplicate()
     identifier.save_ents()
     nodes = identifier.nodes
 
@@ -270,15 +245,6 @@ if __name__ == "__main__":
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
     gbuilder.save_graph("./data/graph_node_link.json")
-    #color_map = []
-    #for node in G:
-    #    color = Node.color( node['ent_type'])
-    #    color_map.append(color)
-    #nx.draw(G, node_color=color_map)#, with_labels=True)
-
-
-    #nx.draw(G, with_labels=False)
-    #plt.show()
 
     
     
