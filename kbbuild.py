@@ -47,7 +47,7 @@ class EntityIdentifier:
         id_label = id_label.replace(" ", "-") 
         id_label = id_label.replace(" ", "") # remove all left spaces
         id_label = id_label.strip("- ")
-        #TODO: remove trailing dash and multiple dashes
+        #TODO: remove multiple dashes
         return id_label
     
 
@@ -172,7 +172,6 @@ class GraphBuilder:
             node_data = self.G.nodes[node_id]
             if node_data['ent_type'] == node_type:
                 nodes_subset.append(node_id)
-        #nodes_subset = [node_id in G.nodes if G.nodes[node_id]['ent_type'] == node_type ]
         return self.G.subgraph(nodes_subset)
     
     def save_graph(self, filename):
