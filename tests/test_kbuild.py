@@ -14,13 +14,13 @@ class EntityIdentifierTestCase1(unittest.TestCase):
         identifier.identity_ents(REUTERS_SENTENCES_SAMPLE)
         #for ent in identifier.nodes:
         #    print(ent)
-        assert(len(identifier.nodes) > 0)
+        self.assertTrue(len(identifier.nodes) > 0)
 
 
     def test_id_from_name(self):
         name = "an International Development Association"
         id_name  = EntityIdentifier.id_from_name(name)
-        assert(id_name == "international-development-association")
+        self.assertEqual(id_name, "international-development-association")
 
 class EdgeBuilderTestCase1(unittest.TestCase):
 
@@ -30,7 +30,7 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         extractions = openie_sample[1:]
         ebuilder = EdgeBuilder()
         edges = ebuilder.sent_edges_build(sentence, extractions)
-        assert(len(edges) == 3)
+        self.assertEqual(len(edges), 3)
 
 
 class GraphBuilderTestCase(unittest.TestCase):
@@ -47,6 +47,9 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges.append(Edge("google", "san-francisco", "OTHER", "has Headquarter in"))
         self.builder = GraphBuilder()
         self.builder.build(nodes, edges)
+
+    #def tearDown(self):
+    #    self.builder.dispose()
 
     def test_node_count(self):
         self.assertEqual(self.builder.G.number_of_nodes(), 4)
