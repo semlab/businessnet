@@ -35,8 +35,7 @@ class EdgeBuilderTestCase1(unittest.TestCase):
 
 class GraphBuilderTestCase(unittest.TestCase):
 
-
-    def test_build(self):
+    def setUp(self):
         nodes = []
         nodes.append(Node("apple", "ORG", "Apple"))
         nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
@@ -48,10 +47,15 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges.append(Edge("google", "san-francisco", "OTHER", "has Headquarter in"))
         builder = GraphBuilder()
         G = builder.build(nodes, edges)
-        nx.draw(G, with_labels=True)
-        plt.show()
-        assert(G.number_of_nodes() == 3)
-        assert(G.number_of_edges() == 2)
+        self.nodes = nodes
+        self.edges = edges
+        self.G = G
+
+    def test_node_count(self):
+        self.assertEqual(self.G.number_of_nodes(), 4)
+    
+    def test_edge_count(self):
+        self.assertEqual(G.number_of_edges(),  3)
 
 
 
