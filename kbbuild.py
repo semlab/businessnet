@@ -142,7 +142,7 @@ class GraphBuilder:
 
     def __init__(self):
         self.G = nx.Graph()
-        self.color_map = []
+        self.colormap = []
 
     def build(self, nodes, edges):
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
@@ -157,10 +157,10 @@ class GraphBuilder:
 
     def build_colormap(self):
         for node_id in self.G:
-            node_data = G.nodes[node_id]
+            node_data = self.G.nodes[node_id]
             ent_type = node_data['ent_type']
             color = Node.color(ent_type)
-            self.color_map.append(color)
+            self.colormap.append(color)
         pass
 
 

@@ -61,6 +61,10 @@ class GraphBuilderTestCase(unittest.TestCase):
         org_graph = self.builder.subgraph('ORG')
         self.assertEqual(org_graph.number_of_nodes(), 2)
 
+    def test_build_colormap(self):
+        self.builder.build_colormap()
+        self.assertEqual(self.builder.G.number_of_nodes(), len(self.builder.colormap))
+
 
 
 
