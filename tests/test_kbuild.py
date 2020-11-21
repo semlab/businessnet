@@ -45,17 +45,18 @@ class GraphBuilderTestCase(unittest.TestCase):
         edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
         edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
         edges.append(Edge("google", "san-francisco", "OTHER", "has Headquarter in"))
-        builder = GraphBuilder()
-        G = builder.build(nodes, edges)
-        self.nodes = nodes
-        self.edges = edges
-        self.G = G
+        self.builder = GraphBuilder()
+        self.builder.build(nodes, edges)
 
     def test_node_count(self):
-        self.assertEqual(self.G.number_of_nodes(), 4)
+        self.assertEqual(self.builder.G.number_of_nodes(), 4)
     
     def test_edge_count(self):
-        self.assertEqual(G.number_of_edges(),  3)
+        self.assertEqual(self.builder.G.number_of_edges(),  3)
+
+    def test_subgraph(self):
+        org_graph = self.builder.subgraph('ORG')
+        self.assertEqual(org_graph.number_of_nodes(), 2)
 
 
 
