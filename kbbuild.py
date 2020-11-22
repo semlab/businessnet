@@ -22,8 +22,8 @@ class EntityIdentifier:
             if len(ent_id) < 3: continue
             if ent.label_ in NodeType.Set and ent_id not in self.nodes_dict:
                 self.nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text, 1)
-            elif ent_id in self.nodes_count_dict:
-                self.nodes_dict[ent_id].count += 1
+            elif ent_id in self.nodes_dict:
+                self.nodes_dict[ent_id].ent_count += 1
         nodes = list(self.nodes_dict.values())
         self.nodes.extend(nodes)
         return self.nodes
@@ -169,7 +169,8 @@ class GraphBuilder:
         pass
 
 
-    def subgraph(self, node_type):
+    # TODO: delete
+    def subgraph_back(self, node_type):
         if node_type not in NodeType.Set:
             return None
         nodes_subset = []
@@ -177,6 +178,23 @@ class GraphBuilder:
             node_data = self.G.nodes[node_id]
             if node_data['ent_type'] == node_type:
                 nodes_subset.append(node_id)
+        return self.G.subgraph(nodes_subset)
+
+    def subgraph(self, node_type=None, count_filter=0):
+        if node_type is not None and node_type not in NodeType.Set:
+            return None
+        G = self.G
+        nodes_subset = []
+        if node_type in NodeType.Set and count_filter > 0:
+            nodes_subset = [n for n,d in G(data=True) 
+                                if d['ent_type'] == node_type and 
+                                d['ent_count'] >= count_filter]
+        elif node_type in NodeType.Set and count_filter == 0:
+            nodes_subset = [n for n,d in G.nodes(data=True)
+                                if d['ent_type'] == node_type]
+        elif node_type is None and count_filter > 0:
+            nodes_subset = [n for n,d in G(data=True) 
+                                if d['ent_count'] >= count_filter]
         return self.G.subgraph(nodes_subset)
     
     def save_graph(self, filename):
