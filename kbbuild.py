@@ -13,7 +13,7 @@ class EntityIdentifier:
     def __init__(self):
         self.nodes = []
 
-    def identity_ents(self, text):
+    def identify_ents(self, text):
         nlp = LangModel.get_instance()
         nodes_dict = {}
         doc = nlp(text)
@@ -199,7 +199,7 @@ def build_the_graph():
         text = textfile.readline()
         while text :
             sents_count = sents_count + 1
-            identifier.identity_ents(text) 
+            identifier.identify_ents(text) 
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()
@@ -229,7 +229,7 @@ if __name__ == "__main__":
         text = textfile.readline()
         while text :
             sents_count = sents_count + 1
-            identifier.identity_ents(text) 
+            identifier.identify_ents(text) 
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()

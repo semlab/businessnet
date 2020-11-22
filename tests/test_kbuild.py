@@ -11,7 +11,7 @@ class EntityIdentifierTestCase1(unittest.TestCase):
 
     def test_identify_ents(self):
         identifier = EntityIdentifier()
-        identifier.identity_ents(REUTERS_SENTENCES_SAMPLE)
+        identifier.identify_ents(REUTERS_SENTENCES_SAMPLE)
         #for ent in identifier.nodes:
         #    print(ent)
         self.assertTrue(len(identifier.nodes) > 0)
