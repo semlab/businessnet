@@ -16,12 +16,16 @@ class EntityIdentifier:
     def identify_ents(self, text):
         nlp = LangModel.get_instance()
         nodes_dict = {}
+        nodes_count_dict = {}
         doc = nlp(text)
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
             if len(ent_id) < 3: continue
             if ent.label_ in NodeType.Set and ent_id not in nodes_dict:
                 nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text)
+                nodes_count_dict[ent_id] = 1
+            elif ent_id in nodes_count_dict:
+                nodes_count_dict[ent_id] += 1
         nodes = list(nodes_dict.values())
         self.nodes.extend(nodes)
         return self.nodes
