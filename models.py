@@ -15,10 +15,11 @@ class EdgeType:
 
 class Node:
 
-    def __init__(self, ent_id, ent_type, ent_label):
+    def __init__(self, ent_id, ent_type, ent_label, ent_count=0):
         self.ent_id = ent_id
         self.ent_type = ent_type
         self.ent_label = ent_label 
+        self.ent_count = ent_count
 
     @staticmethod
     def color(ent_type):

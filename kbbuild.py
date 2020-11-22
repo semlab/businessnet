@@ -12,21 +12,19 @@ class EntityIdentifier:
 
     def __init__(self):
         self.nodes = []
+        self.nodes_dict = {}
 
     def identify_ents(self, text):
         nlp = LangModel.get_instance()
-        nodes_dict = {}
-        nodes_count_dict = {}
         doc = nlp(text)
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
             if len(ent_id) < 3: continue
-            if ent.label_ in NodeType.Set and ent_id not in nodes_dict:
-                nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text)
-                nodes_count_dict[ent_id] = 1
-            elif ent_id in nodes_count_dict:
-                nodes_count_dict[ent_id] += 1
-        nodes = list(nodes_dict.values())
+            if ent.label_ in NodeType.Set and ent_id not in self.nodes_dict:
+                self.nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text, 1)
+            elif ent_id in self.nodes_count_dict:
+                self.nodes_dict[ent_id].count += 1
+        nodes = list(self.nodes_dict.values())
         self.nodes.extend(nodes)
         return self.nodes
 
@@ -59,6 +57,9 @@ class EntityIdentifier:
         print("saving {} nodes".format(len(self.nodes)))
         with open("./data/nodes.txt", 'w') as nodesfile:
             json.dump(self.nodes, nodesfile, indent=6, default=str)
+
+    def save_nodes_count(self):
+        pass
 
 
 class EdgeBuilder:
