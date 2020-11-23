@@ -79,6 +79,30 @@ class ReuterPreproc(CorpusPreproc):
         self.processedtext = processedtext.getvalue()
         return self.processedtext
 
+    
+    def formattext_files(self):
+        content_filepaths = [os.path.join(root, name)
+            for root, dirs, files in os.walk(self.location)
+            for name in files
+            if name.endswith(".sgm")]
+        file_count = len(content_filepaths)
+        for idx, content_filepath in enumerate(content_filepaths):
+            text = self.read_reuterfile(content_filepath)
+            text = self.format_articles(text, idx, file_count)
+            text = self.filter_sents(text)
+            folder, filename = os.path.split(content_filepath) 
+            if not os.path.isdir(outfilepath): 
+                i = 1
+                while os.path.isfile(outfilepath + str(i)):
+                    i += 1
+                outfilepath = outfilepath + str(i)
+                os.mkdir(outfilepath)
+            filename = os.join(outfilepath,  filename + '.txt')
+            with open(filename, 'w') as outfile:
+                outfile.write(text)
+
+
+
 
     def read_reuterfile(self, file_path=None):
         if file_path == None: 
@@ -89,11 +113,8 @@ class ReuterPreproc(CorpusPreproc):
                 file_content = datafile.read()
             except UnicodeDecodeError :
                 #TODO: use logging
-                print()
-                print()
                 print("WARNING: Error Decoding {}, file skipped".format(
                     file_path))
-                print()
                 file_content = None
         if file_content == None: 
             return None
