@@ -14,6 +14,9 @@ class EdgeType:
 
 
 class Node:
+    """
+    ent_count is the number of time the entity was identify in the corpus
+    """
 
     def __init__(self, ent_id, ent_type, ent_label, ent_count=0):
         self.ent_id = ent_id

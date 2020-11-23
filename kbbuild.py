@@ -25,7 +25,8 @@ class EntityIdentifier:
             elif ent_id in self.nodes_dict:
                 self.nodes_dict[ent_id].ent_count += 1
         nodes = list(self.nodes_dict.values())
-        self.nodes.extend(nodes)
+        #self.nodes.extend(nodes)
+        self.nodes = nodes
         return self.nodes
 
 
@@ -186,15 +187,19 @@ class GraphBuilder:
         G = self.G
         nodes_subset = []
         if node_type in NodeType.Set and count_filter > 0:
-            nodes_subset = [n for n,d in G(data=True) 
-                                if d['ent_type'] == node_type and 
+            nodes_subset = [n for n,d in G.nodes(data=True) 
+                                if 'ent_type' in d
+                                and 'ent_count' in d
+                                and d['ent_type'] == node_type and 
                                 d['ent_count'] >= count_filter]
-        elif node_type in NodeType.Set and count_filter == 0:
+        elif node_type in NodeType.Set and count_filter <= 0:
             nodes_subset = [n for n,d in G.nodes(data=True)
-                                if d['ent_type'] == node_type]
+                                if 'ent_type' in d 
+                                and d['ent_type'] == node_type]
         elif node_type is None and count_filter > 0:
-            nodes_subset = [n for n,d in G(data=True) 
-                                if d['ent_count'] >= count_filter]
+            nodes_subset = [n for n,d in G.nodes(data=True) 
+                                if 'ent_count' in d 
+                                and  d['ent_count'] >= count_filter]
         return self.G.subgraph(nodes_subset)
     
     def save_graph(self, filename):
@@ -267,6 +272,9 @@ if __name__ == "__main__":
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
     gbuilder.save_graph("./data/graph_node_link.json")
+    O = gbuilder.subgraph('ORG')
+    nx.draw(O)
+    plt.show()
 
     
     
