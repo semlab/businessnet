@@ -5,7 +5,7 @@ from io import StringIO
 
 from lang import LangModel
 from utils import printProgressBar
-from kbbuild import NodeType
+from models import NodeType
 
 
 
