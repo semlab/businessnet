@@ -63,12 +63,11 @@ class GraphBuilderTestCase(unittest.TestCase):
 
     def test_build_colormap(self):
         self.builder.build_colormap()
-        self.assertEqual(self.builder.G.number_of_nodes(), len(self.builder.colormap))
+        self.assertEqual(self.builder.G.number_of_nodes(), len(self.builder.build_colormap()))
 
     def test_draw(self):
         G = self.builder.G
-        colormap = self.builder.colormap
-        self.builder.build_colormap()
+        colormap = self.builder.build_colormap()
         nx.draw(G, node_color=colormap, pos=nx.random_layout(G), with_labels=True)
         plt.savefig('./data/test_graph.pdf')
 

@@ -148,7 +148,7 @@ class GraphBuilder:
 
     def __init__(self):
         self.G = nx.Graph()
-        self.colormap = []
+        #self.colormap = []
 
     def build(self, nodes, edges):
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
@@ -161,13 +161,16 @@ class GraphBuilder:
         return self.G
 
 
-    def build_colormap(self):
+    def build_colormap(self, G = None):
+        colormap = []
+        if G is None:
+            G = self.G
         for node_id in self.G:
             node_data = self.G.nodes[node_id]
             ent_type = node_data['ent_type']
             color = Node.color(ent_type)
-            self.colormap.append(color)
-        pass
+            colormap.append(color)
+        return colormap
 
 
     # TODO: delete
@@ -235,7 +238,8 @@ def build_the_graph():
     nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
-    edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
 
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
@@ -265,7 +269,8 @@ if __name__ == "__main__":
     nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
-    edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
 
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
@@ -273,8 +278,8 @@ if __name__ == "__main__":
     G = gbuilder.build(nodes, edges)
     gbuilder.save_graph("./data/graph_node_link.json")
     O = gbuilder.subgraph('ORG')
-    nx.draw(O)
-    plt.show()
+    #nx.draw(O)
+    #plt.show()
 
     
     
