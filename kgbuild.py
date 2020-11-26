@@ -165,8 +165,8 @@ class GraphBuilder:
         colormap = []
         if G is None:
             G = self.G
-        for node_id in self.G:
-            node_data = self.G.nodes[node_id]
+        for node_id, node_data in self.G(data=True):
+            #node_data = self.G.nodes[node_id]
             ent_type = node_data['ent_type']
             color = Node.color(ent_type)
             colormap.append(color)
