@@ -4,13 +4,13 @@ class NodeType:
     ORG = "ORG"
     PERSON = "PERSON"
     PLACE = "GPE"
-    Set = {"ORG", "PERSON", "GPE"}
+    Set = ["ORG", "PERSON", "GPE"]
 
 
 class EdgeType:
     TRADE = "TRADE"
     OTHER = "OTHER"
-    Set = {"TRADE", "OTHER"}
+    Set = ["TRADE", "OTHER"]
 
 
 class Node:
