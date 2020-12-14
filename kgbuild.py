@@ -25,8 +25,7 @@ class EntityIdentifier:
             elif ent_id in self.nodes_dict:
                 self.nodes_dict[ent_id].ent_count += 1
         nodes = list(self.nodes_dict.values())
-        nodes = [n for n in nodes if len(n.__dict__.keys()) > 0] # try it with isinstance
-        #self.nodes.extend(nodes)
+        nodes = [n for n in nodes if isinstance(n, Node)] 
         self.nodes = nodes
         return self.nodes
 
