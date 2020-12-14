@@ -81,6 +81,10 @@ class EdgeBuilder:
     """
     def __init__(self): 
         self.edges = []
+
+    def __init__(self, nodelookup):
+        self.edges = []
+        self.nodelookup = nodelookup
        
 
     def edges_build(self, inputpath):
@@ -136,7 +140,10 @@ class EdgeBuilder:
                 #TODO: Retrieve edge type trade/other id
                 rel_type = EdgeType.OTHER
                 if ent1_id is not None and ent2_id is not None and rel_type is not None:
-                    edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
+                    ent1_idx = nodelookup.get_index(ent1_id)
+                    ent2_idx = nodelookup.get_index(ent2_id)
+                    #edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
+                    edge = Edge(ent1_idx, ent2_id2, rel_type, rel_label)
                     edges.append(edge)
         return edges
 
@@ -262,7 +269,9 @@ def build_the_graph():
     #identifier.save_ents()
     nodes = identifier.nodes
 
-    ebuilder = EdgeBuilder()
+    nodelookup = NodeLookup(nodes)
+
+    ebuilder = EdgeBuilder(nodelookup)
     #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
     edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
@@ -293,7 +302,9 @@ if __name__ == "__main__":
     #identifier.save_ents()
     nodes = identifier.nodes
 
-    ebuilder = EdgeBuilder()
+    nodelookup = NodeLookup(nodes)
+
+    ebuilder = EdgeBuilder(nodelookup)
     #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
     edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
