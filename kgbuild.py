@@ -25,6 +25,7 @@ class EntityIdentifier:
             elif ent_id in self.nodes_dict:
                 self.nodes_dict[ent_id].ent_count += 1
         nodes = list(self.nodes_dict.values())
+        nodes = [n for n in nodes if len(n.__dict__.keys()) > 0] # try it with isinstance
         #self.nodes.extend(nodes)
         self.nodes = nodes
         return self.nodes
@@ -160,6 +161,7 @@ class GraphBuilder:
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
         return self.G
+
 
     def build(self, nodes, edges):
         nodes_list = [(idx, n.__dict__) for i,n enumerate(nodes)]
