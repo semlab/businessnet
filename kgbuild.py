@@ -54,13 +54,6 @@ class EntityIdentifier:
         return id_label
     
 
-    def save_ents(self):
-        print("saving {} nodes".format(len(self.nodes)))
-        with open("./data/nodes.txt", 'w') as nodesfile:
-            json.dump(self.nodes, nodesfile, indent=6, default=str)
-
-    def save_nodes_count(self):
-        pass
 
 
 class EdgeBuilder:
