@@ -150,7 +150,8 @@ class GraphBuilder:
         self.G = nx.Graph()
         #self.colormap = []
 
-    def build(self, nodes, edges):
+    # TODO: todel
+    def build_todel(self, nodes, edges):
         nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
@@ -159,6 +160,17 @@ class GraphBuilder:
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
         return self.G
+
+    def build(self, nodes, edges):
+        nodes_list = [(idx, n.__dict__) for i,n enumerate(nodes)]
+        edges_list = [(edge.ent1_id, edge.ent2_id, {
+                "label": edge.rel_label,
+                "type": edge.rel_type
+        }) for edge in edges]
+        self.G.add_nodes_from(nodes_list)
+        self.G.add_edges_from(edges)
+        return self.G
+
 
 
     def build_colormap(self, G = None):
