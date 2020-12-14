@@ -54,6 +54,25 @@ class EntityIdentifier:
         return id_label
     
 
+class NodeLookup:
+
+    def __init__(nodes):
+        """
+         nodes from EntityIdentifier
+        """
+        # TODO: find a way to ensure that enumerate give the same ids
+        # for the same nodes in lookup (here) and in graphbuilder
+        self.labelids = {}
+        self.indexes = {}
+        for idx,node in enumerate(nodes):
+            labelids[idx] = node.id
+            indexes[node.id] = idx
+            
+    def get_labelid(index):
+        return self.labelids[index]
+
+    def get_index(labelid):
+        return self.indexes[labelid]
 
 
 class EdgeBuilder:
@@ -240,7 +259,7 @@ def build_the_graph():
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()
-    identifier.save_ents()
+    #identifier.save_ents()
     nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
@@ -271,7 +290,7 @@ if __name__ == "__main__":
             text = textfile.readline()
             print(f'\r{sents_count} sentences processed', end='')
     print()
-    identifier.save_ents()
+    #identifier.save_ents()
     nodes = identifier.nodes
 
     ebuilder = EdgeBuilder()
