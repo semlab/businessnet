@@ -163,7 +163,7 @@ class GraphBuilder:
 
 
     def build(self, nodes, edges):
-        nodes_list = [(idx, n.__dict__) for i,n enumerate(nodes)]
+        nodes_list = [(idx, n.__dict__) for idx,n in enumerate(nodes)]
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
                 "type": edge.rel_type
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     G = gbuilder.build(nodes, edges)
     gbuilder.save_graph("./data/graph_node_link.json")
     O = gbuilder.subgraph('ORG')
-    #nx.draw(O)
+    #nx.draw(G)
     #plt.show()
 
     
