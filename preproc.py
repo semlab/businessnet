@@ -147,8 +147,6 @@ class ReuterPreproc(CorpusPreproc):
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
             if verbose:
-                #printProgressBar(idx+1, article_count, 
-                #    prefix=progress_prefix) 
                 printProgressBar(file_index+1, 
                     file_count +1, 
                     prefix=progress_prefix.format(
