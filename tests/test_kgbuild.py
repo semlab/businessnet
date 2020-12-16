@@ -34,7 +34,14 @@ class EdgeBuilderTestCase1(unittest.TestCase):
 class NodeLookupTestCase1(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.nodelookup = NodeLookup(SAMPLE_NODES)
+
+    def test_get_labelid(self):
+        self.assertEqual(
+            self.nodelookup.get_labelid(0), "apple") 
+
+    def test_get_index(self):
+        self.assertEqual( self.nodelookup.get_index("apple"), 0)
 
 
 class GraphBuilderTestCase(unittest.TestCase):

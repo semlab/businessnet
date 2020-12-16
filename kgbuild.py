@@ -65,8 +65,8 @@ class NodeLookup:
         self.labelids = {}
         self.indexes = {}
         for idx,node in enumerate(nodes):
-            labelids[idx] = node.ent_id
-            indexes[node.id] = idx
+            self.labelids[idx] = node.ent_id
+            self.indexes[node.ent_id] = idx
             
     def get_labelid(self, index):
         return self.labelids[index]
