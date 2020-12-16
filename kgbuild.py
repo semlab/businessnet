@@ -84,7 +84,7 @@ class EdgeBuilder:
         self.nodelookup = nodelookup
        
 
-    def edges_build(self, inputpath):
+    def edges_build(self, inputpath, verbose=True):
         edges_dict = {}
         #edges = []
         lines = []
@@ -104,7 +104,8 @@ class EdgeBuilder:
                 edge_key = "{}_{}".format(edge.ent1_id, edge.ent2_id)
                 if edge_key  not in edges_dict:
                     edges_dict[edge_key] = edge
-            printProgressBar(line_iter, lines_count)
+            if verbose:
+                printProgressBar(line_iter, lines_count)
             line_iter += 1 # to point next sentence
         print()
         edges = list(edges_dict.values())

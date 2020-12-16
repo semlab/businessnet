@@ -8,7 +8,7 @@ class ReuterPreprocTestCase1(unittest.TestCase):
 
     def test_format_articles(self):
         pp = ReuterPreproc(None)
-        res = pp.format_articles(REUTERS_CORPUS_SAMPLE)
+        res = pp.format_articles(REUTERS_CORPUS_SAMPLE, verbose=False)
         self.assertTrue(len(res) > 0)
 
 

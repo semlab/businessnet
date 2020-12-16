@@ -121,7 +121,7 @@ class ReuterPreproc(CorpusPreproc):
         return file_content
         
 
-    def format_articles(self, file_content, file_index=0, file_count=0):
+    def format_articles(self, file_content, file_index=0, file_count=0, verbose=True):
         """
         @params:
             file_content    - Required: file content to be formatted
@@ -146,16 +146,17 @@ class ReuterPreproc(CorpusPreproc):
             article_contents[idx] = article_content
             # TODO: prepare cleaner content (remove tables and other non 
             # sentence  content.)
-            #printProgressBar(idx+1, article_count, 
-            #    prefix=progress_prefix) 
-            full_completion = file_count + 1
-            printProgressBar(file_index+1, full_completion, 
-                prefix=progress_prefix.format(
-                    file_index + (idx // article_count),
-                    file_count,
-                    idx+1,
-                    article_count
-                )) 
+            if verbose:
+                #printProgressBar(idx+1, article_count, 
+                #    prefix=progress_prefix) 
+                printProgressBar(file_index+1, 
+                    file_count +1, 
+                    prefix=progress_prefix.format(
+                        file_index + (idx // article_count),
+                        file_count,
+                        idx+1,
+                        article_count
+                    )) 
         file_content = '\n'.join(article_contents)    
         return file_content
 
