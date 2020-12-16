@@ -1,4 +1,20 @@
 
+from models import Node, Edge
+
+SAMPLE_NODES = [
+    Node("apple", "ORG", "Apple"),
+    Node("tim-cook", "PERSON", "Tim Cook"),
+    Node("san-francisco", "GPE", "San Francisco"),
+    Node("google", "ORG", "Google"),
+]
+
+SAMPLE_EDGES = [
+    Edge(0, 1, "OTHER", "is CEO"),
+    Edge(0, 2, "OTHER", "has Headquarter in"),
+    Edge(3, 2, "OTHER", "has Headquarter in"),
+]
+
+
 REUTERS_CORPUS_SAMPLE = """
 <!DOCTYPE lewis SYSTEM "lewis.dtd">
 <REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="9914" NEWID="5001">

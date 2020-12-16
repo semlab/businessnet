@@ -56,7 +56,7 @@ class EntityIdentifier:
 
 class NodeLookup:
 
-    def __init__(nodes):
+    def __init__(self, nodes):
         """
          nodes from EntityIdentifier
         """
@@ -65,13 +65,13 @@ class NodeLookup:
         self.labelids = {}
         self.indexes = {}
         for idx,node in enumerate(nodes):
-            labelids[idx] = node.id
+            labelids[idx] = node.ent_id
             indexes[node.id] = idx
             
-    def get_labelid(index):
+    def get_labelid(self, index):
         return self.labelids[index]
 
-    def get_index(labelid):
+    def get_index(self, labelid):
         return self.indexes[labelid]
 
 
@@ -245,7 +245,7 @@ class GraphBuilder:
 
 
     
-# for tests in the shell
+# Convenient for shell experimentations
 def build_the_graph():
     identifier = EntityIdentifier()
     sents_count = 0
@@ -280,31 +280,34 @@ if __name__ == "__main__":
     # --openie-run="openie run command (for external call)"
     # --output="graph output file name"
     # TODO: Verify existence of input data
-    identifier = EntityIdentifier()
-    sents_count = 0
-    with open('./data/reuter_sentences.txt', 'r') as textfile:
-        text = textfile.readline()
-        while text :
-            sents_count = sents_count + 1
-            identifier.identify_ents(text) 
-            text = textfile.readline()
-            print(f'\r{sents_count} sentences processed', end='')
-    print()
+    build_the_graph()
+
+
+    #identifier = EntityIdentifier()
+    #sents_count = 0
+    #with open('./data/reuter_sentences.txt', 'r') as textfile:
+    #    text = textfile.readline()
+    #    while text :
+    #        sents_count = sents_count + 1
+    #        identifier.identify_ents(text) 
+    #        text = textfile.readline()
+    #        print(f'\r{sents_count} sentences processed', end='')
+    #print()
     #identifier.save_ents()
-    nodes = identifier.nodes
+    #nodes = identifier.nodes
 
-    nodelookup = NodeLookup(nodes)
+    #nodelookup = NodeLookup(nodes)
 
-    ebuilder = EdgeBuilder(nodelookup)
+    #ebuilder = EdgeBuilder(nodelookup)
     #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
-    edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
-    print("Number of edges: {}".format(len(edges)))
+    #edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
+    #print("Number of edges: {}".format(len(edges)))
 
-    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-    gbuilder = GraphBuilder()
-    G = gbuilder.build(nodes, edges)
-    gbuilder.save_graph("./data/graph_node_link.json")
-    O = gbuilder.subgraph('ORG')
+    #print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
+    #gbuilder = GraphBuilder()
+    #G = gbuilder.build(nodes, edges)
+    #gbuilder.save_graph("./data/graph_node_link.json")
+    #O = gbuilder.subgraph('ORG')
     #nx.draw(G)
     #plt.show()
 

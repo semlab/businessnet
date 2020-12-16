@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from test import support
 from models import Node, Edge
-from kgbuild import EntityIdentifier, EdgeBuilder, GraphBuilder
+from kgbuild import EntityIdentifier, EdgeBuilder, GraphBuilder, NodeLookup
 from tests.test_data import REUTERS_SENTENCES_SAMPLE, OPENIE_SENTENCE_EXTRACTION
+from tests.test_data import SAMPLE_NODES, SAMPLE_EDGES
 
 
 class EntityIdentifierTestCase1(unittest.TestCase):
@@ -32,21 +33,28 @@ class EdgeBuilderTestCase1(unittest.TestCase):
         edges = ebuilder.sent_edges_build(sentence, extractions)
         self.assertEqual(len(edges), 3)
 
+class NodeLookupTestCase1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
 
 class GraphBuilderTestCase(unittest.TestCase):
 
     def setUp(self):
-        nodes = []
-        nodes.append(Node("apple", "ORG", "Apple"))
-        nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
-        nodes.append(Node("san-francisco", "GPE", "San Francisco"))
-        nodes.append(Node("google", "ORG", "Google"))
-        edges = []
+        #nodes = []
+        #nodes.append(Node("apple", "ORG", "Apple"))
+        #nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
+        #nodes.append(Node("san-francisco", "GPE", "San Francisco"))
+        #nodes.append(Node("google", "ORG", "Google"))
+        #edges = []
+        #edges.append(Edge(0, 1, "OTHER", "is CEO"))
+        #edges.append(Edge(0, 2, "OTHER", "has Headquarter in"))
+        #edges.append(Edge(3, 2, "OTHER", "has Headquarter in"))
         # TODO: use lookup table
         # TODO: test lookup table
-        edges.append(Edge(0, 1, "OTHER", "is CEO"))
-        edges.append(Edge(0, 2, "OTHER", "has Headquarter in"))
-        edges.append(Edge(3, 2, "OTHER", "has Headquarter in"))
+        nodes = SAMPLE_NODES
+        edges = SAMPLE_EDGES
         self.builder = GraphBuilder()
         self.builder.build(nodes, edges)
 
