@@ -13,8 +13,6 @@ class EntityIdentifierTestCase1(unittest.TestCase):
     def test_identify_ents(self):
         identifier = EntityIdentifier()
         identifier.identify_ents(REUTERS_SENTENCES_SAMPLE)
-        #for ent in identifier.nodes:
-        #    print(ent)
         self.assertTrue(len(identifier.nodes) > 0)
 
 
@@ -42,15 +40,6 @@ class NodeLookupTestCase1(unittest.TestCase):
 class GraphBuilderTestCase(unittest.TestCase):
 
     def setUp(self):
-        #nodes = []
-        #nodes.append(Node("apple", "ORG", "Apple"))
-        #nodes.append(Node("tim-cook", "PERSON", "Tim Cook"))
-        #nodes.append(Node("san-francisco", "GPE", "San Francisco"))
-        #nodes.append(Node("google", "ORG", "Google"))
-        #edges = []
-        #edges.append(Edge(0, 1, "OTHER", "is CEO"))
-        #edges.append(Edge(0, 2, "OTHER", "has Headquarter in"))
-        #edges.append(Edge(3, 2, "OTHER", "has Headquarter in"))
         # TODO: use lookup table
         # TODO: test lookup table
         nodes = SAMPLE_NODES
