@@ -79,10 +79,7 @@ class EdgeBuilder:
     """
     Build relationships from OpenIE output
     """
-    def __init__(self): 
-        self.edges = []
-
-    def __init__(self, nodelookup):
+    def __init__(self, nodelookup = None):
         self.edges = []
         self.nodelookup = nodelookup
        
@@ -117,6 +114,7 @@ class EdgeBuilder:
 
     def sent_edges_build(self, sent_txt, extractions):
         edges = []
+        nodelookup = self.nodelookup
         extract_pattern = re.compile(r"^[0-9]\.[0-9]{2} \(.*;.*;.*\)$")
         nlp = LangModel.get_instance()
         doc  = nlp(sent_txt)
@@ -140,10 +138,12 @@ class EdgeBuilder:
                 #TODO: Retrieve edge type trade/other id
                 rel_type = EdgeType.OTHER
                 if ent1_id is not None and ent2_id is not None and rel_type is not None:
-                    ent1_idx = nodelookup.get_index(ent1_id)
-                    ent2_idx = nodelookup.get_index(ent2_id)
-                    #edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
-                    edge = Edge(ent1_idx, ent2_id2, rel_type, rel_label)
+                    if nodelookup is not None:
+                        ent1_idx = nodelookup.get_index(ent1_id)
+                        ent2_idx = nodelookup.get_index(ent2_id)
+                        edge = Edge(ent1_idx, ent2_id2, rel_type, rel_label)
+                    else:
+                        edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
                     edges.append(edge)
         return edges
 
@@ -169,16 +169,6 @@ class GraphBuilder:
         self.G = nx.Graph()
         #self.colormap = []
 
-    # TODO: todel
-    def build_todel(self, nodes, edges):
-        nodes_list = [(node.ent_id, node.__dict__) for node in nodes]
-        edges_list = [(edge.ent1_id, edge.ent2_id, {
-                "label": edge.rel_label,
-                "type": edge.rel_type
-            }) for edge in edges]
-        self.G.add_nodes_from(nodes_list)
-        self.G.add_edges_from(edges_list)
-        return self.G
 
 
     def build(self, nodes, edges):
@@ -188,7 +178,7 @@ class GraphBuilder:
                 "type": edge.rel_type
         }) for edge in edges]
         self.G.add_nodes_from(nodes_list)
-        self.G.add_edges_from(edges)
+        self.G.add_edges_from(edges_list)
         return self.G
 
 
@@ -197,7 +187,9 @@ class GraphBuilder:
         colormap = []
         if G is None:
             G = self.G
-        for node_id, node_data in self.G(data=True):
+        if G is None: print("THE GRAPH IS NONE !!!")
+        #for node_id, node_data in self.G(data=True):
+        for node_id, node_data in G.nodes(data=True):
             #node_data = self.G.nodes[node_id]
             ent_type = node_data['ent_type']
             color = Node.color(ent_type)
@@ -215,6 +207,7 @@ class GraphBuilder:
             if node_data['ent_type'] == node_type:
                 nodes_subset.append(node_id)
         return self.G.subgraph(nodes_subset)
+
 
     def subgraph(self, node_type=None, count_filter=0):
         if node_type is not None and node_type not in NodeType.Set:
