@@ -141,7 +141,7 @@ class EdgeBuilder:
                     if nodelookup is not None:
                         ent1_idx = nodelookup.get_index(ent1_id)
                         ent2_idx = nodelookup.get_index(ent2_id)
-                        edge = Edge(ent1_idx, ent2_id2, rel_type, rel_label)
+                        edge = Edge(ent1_idx, ent2_idx2, rel_type, rel_label)
                     else:
                         edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
                     edges.append(edge)
@@ -170,17 +170,14 @@ class GraphBuilder:
 
 
     def build(self, nodes, edges):
-        print("\nLES NOMBRE NODES:", len(nodes))
         nodes_list = [(idx, n.__dict__) for idx,n in enumerate(nodes)]
-        print("LONGUEUR NODE LIST: ", len(nodes_list))
-        print(nodes_list)
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
                 "type": edge.rel_type
         }) for edge in edges]
+        self.G.clear()
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
-        print("LES NODES IN GRAPHS: ", self.G.number_of_nodes())
         return self.G
 
 
@@ -189,7 +186,6 @@ class GraphBuilder:
         if G is None:
             G = self.G
         for node_id, node_data in G.nodes(data=True):
-            print(node_data)
             color = 'gray'
             if 'ent_type' in node_data:
                 ent_type = node_data['ent_type']

@@ -42,9 +42,11 @@ class GraphBuilderTestCase(unittest.TestCase):
         nodes.append(Node("san-francisco", "GPE", "San Francisco"))
         nodes.append(Node("google", "ORG", "Google"))
         edges = []
-        edges.append(Edge("apple", "tim-cook", "OTHER", "is CEO"))
-        edges.append(Edge("apple", "san-francisco", "OTHER", "has Headquarter in"))
-        edges.append(Edge("google", "san-francisco", "OTHER", "has Headquarter in"))
+        # TODO: use lookup table
+        # TODO: test lookup table
+        edges.append(Edge(0, 1, "OTHER", "is CEO"))
+        edges.append(Edge(0, 2, "OTHER", "has Headquarter in"))
+        edges.append(Edge(3, 2, "OTHER", "has Headquarter in"))
         self.builder = GraphBuilder()
         self.builder.build(nodes, edges)
 
