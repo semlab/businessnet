@@ -48,8 +48,8 @@ class GraphBuilderTestCase(unittest.TestCase):
         self.builder = GraphBuilder()
         self.builder.build(nodes, edges)
 
-    #def tearDown(self):
-    #    self.builder.dispose()
+    def tearDown(self):
+        self.builder.G.clear()
 
     def test_node_count(self):
         self.assertEqual(self.builder.G.number_of_nodes(), 4)

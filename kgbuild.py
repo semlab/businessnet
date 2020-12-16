@@ -167,32 +167,33 @@ class GraphBuilder:
 
     def __init__(self):
         self.G = nx.Graph()
-        #self.colormap = []
-
 
 
     def build(self, nodes, edges):
+        print("\nLES NOMBRE NODES:", len(nodes))
         nodes_list = [(idx, n.__dict__) for idx,n in enumerate(nodes)]
+        print("LONGUEUR NODE LIST: ", len(nodes_list))
+        print(nodes_list)
         edges_list = [(edge.ent1_id, edge.ent2_id, {
                 "label": edge.rel_label,
                 "type": edge.rel_type
         }) for edge in edges]
         self.G.add_nodes_from(nodes_list)
         self.G.add_edges_from(edges_list)
+        print("LES NODES IN GRAPHS: ", self.G.number_of_nodes())
         return self.G
-
 
 
     def build_colormap(self, G = None):
         colormap = []
         if G is None:
             G = self.G
-        if G is None: print("THE GRAPH IS NONE !!!")
-        #for node_id, node_data in self.G(data=True):
         for node_id, node_data in G.nodes(data=True):
-            #node_data = self.G.nodes[node_id]
-            ent_type = node_data['ent_type']
-            color = Node.color(ent_type)
+            print(node_data)
+            color = 'gray'
+            if 'ent_type' in node_data:
+                ent_type = node_data['ent_type']
+                color = Node.color(ent_type)
             colormap.append(color)
         return colormap
 
