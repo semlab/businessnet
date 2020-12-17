@@ -275,9 +275,12 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
 if __name__ == "__main__":
     # TODO: Verify existence of input data
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', help="sentences input text file")
-    parser.add_argument('-o', '--output', help="graph output file")
-    parser.add_argument('-e', '--extraction', help="OpenIE extraction files")
+    parser.add_argument('-i', '--input', required=True, 
+            help="sentences input text file")
+    parser.add_argument('-o', '--output', required=True, 
+            help="graph output file")
+    parser.add_argument('-e', '--extraction', required=True, 
+            help="OpenIE extraction files")
     parser.add_argument('-v', dest='verbose', action='store_true')
     args = parser.parse_args()
     #input = './data/reuter_sentences.txt'
