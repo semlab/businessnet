@@ -248,10 +248,8 @@ class GraphBuilder:
     
 # Convenient for shell experimentations
 def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
-#def build_the_graph():
     identifier = EntityIdentifier()
     sents_count = 0
-    #with open('./data/reuter_sentences.txt', 'r') as textfile:
     with open(inputfilepath, 'r') as textfile:
         text = textfile.readline()
         while text :
@@ -262,14 +260,10 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
     print()
     #identifier.save_ents()
     nodes = identifier.nodes
-
     nodelookup = NodeLookup(nodes)
-
     ebuilder = EdgeBuilder(nodelookup)
-    #edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
-
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
@@ -279,10 +273,6 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
 
 
 if __name__ == "__main__":
-    # --input="sentences inpout text file"
-    # --extractions="openie extractions"
-    # --openie-run="openie run command (for external call)"
-    # --output="graph output file name"
     # TODO: Verify existence of input data
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', help="sentences input text file")
@@ -301,35 +291,3 @@ if __name__ == "__main__":
             extractionfilepath, 
             outputfilepath,
             verbose)
-
-
-    #identifier = EntityIdentifier()
-    #sents_count = 0
-    #with open('./data/reuter_sentences.txt', 'r') as textfile:
-    #    text = textfile.readline()
-    #    while text :
-    #        sents_count = sents_count + 1
-    #        identifier.identify_ents(text) 
-    #        text = textfile.readline()
-    #        print(f'\r{sents_count} sentences processed', end='')
-    #print()
-    #identifier.save_ents()
-    #nodes = identifier.nodes
-
-    #nodelookup = NodeLookup(nodes)
-
-    #ebuilder = EdgeBuilder(nodelookup)
-    #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
-    #edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
-    #print("Number of edges: {}".format(len(edges)))
-
-    #print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
-    #gbuilder = GraphBuilder()
-    #G = gbuilder.build(nodes, edges)
-    #gbuilder.save_graph("./data/graph_node_link.json")
-    #O = gbuilder.subgraph('ORG')
-    #nx.draw(G)
-    #plt.show()
-
-    
-    
