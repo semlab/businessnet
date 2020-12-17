@@ -1,3 +1,4 @@
+import argparse
 import re
 import json
 import networkx as nx
@@ -246,10 +247,12 @@ class GraphBuilder:
 
     
 # Convenient for shell experimentations
-def build_the_graph():
+def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
+#def build_the_graph():
     identifier = EntityIdentifier()
     sents_count = 0
-    with open('./data/reuter_sentences.txt', 'r') as textfile:
+    #with open('./data/reuter_sentences.txt', 'r') as textfile:
+    with open(inputfilepath, 'r') as textfile:
         text = textfile.readline()
         while text :
             sents_count = sents_count + 1
@@ -263,24 +266,41 @@ def build_the_graph():
     nodelookup = NodeLookup(nodes)
 
     ebuilder = EdgeBuilder(nodelookup)
-    #edges = ebuilder.edges_build("./data/reuter_openie_out.txt")    
+    #edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
     print("Number of edges: {}".format(len(edges)))
 
     print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
+    gbuilder.save_graph("./data/graph_node_link.json")
     return G
 
 
 
 if __name__ == "__main__":
-    # --sentences="sentences inpout text file"
+    # --input="sentences inpout text file"
     # --extractions="openie extractions"
     # --openie-run="openie run command (for external call)"
     # --output="graph output file name"
     # TODO: Verify existence of input data
-    build_the_graph()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', help="sentences input text file")
+    parser.add_argument('-o', '--output', help="graph output file")
+    parser.add_argument('-e', '--extraction', help="OpenIE extraction files")
+    parser.add_argument('-v', dest='verbose', action='store_true')
+    args = parser.parse_args()
+    #input = './data/reuter_sentences.txt'
+    inputfilepath = args.input
+    #"./data/reuter_sentences_out.txt"
+    extractionfilepath = args.extraction
+    #"./data/graph_node_link.json"
+    outputfilepath = args.output
+    verbose = args.verbose
+    build_the_graph(inputfilepath, 
+            extractionfilepath, 
+            outputfilepath,
+            verbose)
 
 
     #identifier = EntityIdentifier()

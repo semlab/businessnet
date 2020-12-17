@@ -38,7 +38,7 @@ class NodeLookupTestCase1(unittest.TestCase):
 
     def test_get_labelid(self):
         self.assertEqual(
-            self.nodelookup.get_labelid(0), "apple") 
+            self.nodelookup.get_labelid(1), "tim-cook") 
 
     def test_get_index(self):
         self.assertEqual( self.nodelookup.get_index("apple"), 0)
