@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse
 import re
 import json
@@ -256,18 +258,19 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
             sents_count = sents_count + 1
             identifier.identify_ents(text) 
             text = textfile.readline()
-            print(f'\r{sents_count} sentences processed', end='')
-    print()
+            if verbose:
+                print(f'\r{sents_count} sentences processed', end='')
+    if verbose : print()
     #identifier.save_ents()
     nodes = identifier.nodes
     nodelookup = NodeLookup(nodes)
     ebuilder = EdgeBuilder(nodelookup)
-    edges = ebuilder.edges_build("./data/reuter_sentences_out.txt")    
-    print("Number of edges: {}".format(len(edges)))
-    print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
+    edges = ebuilder.edges_build(extractionfilepath)    
+    if verbose:
+        print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
     gbuilder = GraphBuilder()
     G = gbuilder.build(nodes, edges)
-    gbuilder.save_graph("./data/graph_node_link.json")
+    gbuilder.save_graph(outputfilepath)
     return G
 
 
