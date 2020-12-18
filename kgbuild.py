@@ -22,7 +22,7 @@ class EntityIdentifier:
         doc = nlp(text)
         for ent in doc.ents:
             ent_id = self.id_from_name(ent.text)
-            if len(ent_id) < 3: continue
+            if len(ent_id) < 2: continue
             if ent.label_ in NodeType.Set and ent_id not in self.nodes_dict:
                 self.nodes_dict[ent_id] = Node(ent_id, ent.label_, ent.text, 1)
             elif ent_id in self.nodes_dict:
@@ -142,13 +142,21 @@ class EdgeBuilder:
                 #TODO: Retrieve edge type trade/other id
                 rel_type = EdgeType.OTHER
                 if ent1_id is not None and ent2_id is not None and rel_type is not None:
+                    edge = None
                     if nodelookup is not None:
-                        ent1_idx = nodelookup.get_index(ent1_id)
-                        ent2_idx = nodelookup.get_index(ent2_id)
-                        edge = Edge(ent1_idx, ent2_idx2, rel_type, rel_label)
+                        try:
+                            ent1_idx = nodelookup.get_index(ent1_id)
+                            ent2_idx = nodelookup.get_index(ent2_id)
+                            edge = Edge(ent1_idx, ent2_idx, rel_type, rel_label)
+                        except KeyError:
+                            # TODO logging
+                            print("Warning {} or {} not in the dictionary".format(
+                                ent1_id, ent2_id
+                            ))
                     else:
                         edge = Edge(ent1_id, ent2_id, rel_type, rel_label)
-                    edges.append(edge)
+                    if edge is not None:
+                        edges.append(edge)
         return edges
 
 
@@ -259,7 +267,8 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
             identifier.identify_ents(text) 
             text = textfile.readline()
             if verbose:
-                print(f'\r{sents_count} sentences processed', end='')
+                #print(f'\r{sents_count} sentences processed', end='')
+                print(f'{sents_count} sentences processed', end='\r')
     if verbose : print()
     #identifier.save_ents()
     nodes = identifier.nodes
