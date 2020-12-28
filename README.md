@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 To build the knowledge graph, two files are needed: A text file formatted as 
 one sentence per line (the input file), and a file containing the extraction 
-done using OpenIE (the extraction file).
+done using [OpenIE](https://github.com/dair-iitd/OpenIE-standalone) (the extraction file).
 You should also specify the graph output (json) file. 
 
 ````
