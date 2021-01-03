@@ -106,9 +106,11 @@ if __name__ == "__main__":
     ), axis=0)
     # setting up the network
     dG = dgl.from_networkx(G)
-    embed = nn.Embedding(nb_nodes, 5)
+    #embed = nn.Embedding(nb_nodes, 5)
+    embed = nn.Embedding(nb_nodes, 50)
     dG.ndata['feat'] = embed.weight
-    net = GCN(5,5,3)
+    #net = GCN(5,5,3)
+    net = GCN(50,50,3)
     inputs = embed.weight
     labeled_nodes = torch.tensor(lbl_nodes)
     labels = torch.tensor(labels_lst)
