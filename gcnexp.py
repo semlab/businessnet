@@ -72,38 +72,39 @@ if __name__ == "__main__":
     nodes = [n for n,d in G.nodes(data=True) if len(d.keys()) > 0 ]
     builder.G = G.subgraph(nodes)
     G = builder.G
-
+    # selecting connected component (subgraph)
     connected_components = sorted(nx.connected_components(G), 
         key=len, reverse=True)
-    component = connected_components[1]
+    component = connected_components[0]
+    # relabelling subgraph nodes
     G = G.subgraph(component)
+    mapping = {idn:idx for idx, idn in enumerate(G.nodes)} 
+    G = nx.relabel_nodes(G, mapping)
     nb_nodes = G.number_of_nodes()
     print("Number of nodes: {}".format(nb_nodes))
-    
+    # selecting labelled nodes 
     orgs = [n for n,d in G.nodes(data=True) 
-                if 'ent_type' in d 
-                and d["ent_type"] == "ORG"]
+                if 'ent_type' in d and d["ent_type"] == "ORG"]
     people = [n for n,d in G.nodes(data=True)
-                if 'ent_type' in d 
-                and d['ent_type'] == 'PERSON']
+                if 'ent_type' in d and d['ent_type'] == 'PERSON']
     places = [n for n,d in G.nodes(data=True)
-                if 'ent_type' in d 
-                and d['ent_type'] == 'GPE']
+                if 'ent_type' in d and d['ent_type'] == 'GPE']
     nb_orgs = len(orgs)
     nb_people = len(people)
     nb_places = len(places)
-
-    lbl_orgs = random.sample(orgs, int(nb_orgs*0.10)) # using 10% of orgs to be labelled
-    lbl_people = random.sample(people, int(nb_people*0.10)) # 10% of labelled people
-    lbl_places = random.sample(places, int(nb_places*0.10)) # 10% of labelled places
-
+    nb_lbl_orgs = int(nb_orgs*0.10) # using 10% of orgs to be labelled
+    nb_lbl_people = int(nb_people*0.10) # 10% of labelled people
+    nb_lbl_places = int(nb_places*0.10) # 10% of labelled places
+    lbl_orgs = random.sample(orgs, nb_lbl_orgs)
+    lbl_people = random.sample(people, nb_lbl_people)
+    lbl_places = random.sample(places, nb_lbl_places)
     lbl_nodes = np.concatenate(( lbl_orgs, lbl_people, lbl_places), axis=0) 
     labels_lst = np.concatenate((
-        np.full(len(lbl_orgs), 0), # orgs are labelled 0
-        np.full(len(lbl_people), 1), # people are labelled 1
-        np.full(len(lbl_places), 2) # places are labelled 2
+        np.full(nb_lbl_orgs, 0), # orgs are labelled 0
+        np.full(nb_lbl_people, 1), # people are labelled 1
+        np.full(nb_lbl_places, 2) # places are labelled 2
     ), axis=0)
-
+    # setting up the network
     dG = dgl.from_networkx(G)
     embed = nn.Embedding(nb_nodes, 5)
     dG.ndata['feat'] = embed.weight
@@ -122,47 +123,5 @@ if __name__ == "__main__":
         loss = F.nll_loss(logp[labeled_nodes], labels)
         optimizer.zero_grad()
         loss.backward()
-        optimzer.step()
-        print("Epoch %d | Loss: %.4f" % (epoch, loss.item()))
-##########
-
-    nb_labeled = int(len(node_labels) * 0.25) # using 25% of nodes to be labelled
-    labeled_nodes_lst = []
-    while len(list(Counter(labeled_nodes_lst).keys())) < 3:
-        labeled_nodes_lst = random.sample(node_idxs, nb_labeled)
-    labels_lst = [node_labels[i] for i in labeled_nodes_lst]
-    
-    dG = dgl.from_networkx(G)
-    embed = nn.Embedding(nb_nodes, 5)
-    dG.ndata['feat'] = embed.weight
-    net = GCN(5,5,3)
-    inputs = embed.weight
-    labeled_nodes = torch.tensor(labeled_nodes_lst) 
-    labels = torch.tensor(labels_lst) 
-
-    optimizer = torch.optim.Adam(itertools.chain(net.parameters(), 
-            embed.parameters()), 
-            lr=0.01)
-    all_logits = []
-    for epoch in range(100):
-        logits = net(dG, inputs)
-        all_logits.append(logits.detach())
-        logp = F.log_softmax(logits, 1)
-        loss = F.nll_loss(logp[labeled_nodes], labels)
-
-        optimizer.zero_grad()
-        loss.backward()
         optimizer.step()
-
-        print('Epoch %d | Loss: %.4f' % (epoch, loss.item()))
-
-    fig = plt.figure(dpi=150)
-    fig.clf()
-    ax = fig.subplots()
-    
-    draw(99)
-    #ani = animation.FuncAnimation(fig, draw, frames=len(all_logits), interval=200)
-    plt.show()
-
-
-
+        print("Epoch %d | Loss: %.4f" % (epoch, loss.item()))
