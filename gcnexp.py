@@ -92,6 +92,7 @@ if __name__ == "__main__":
     nb_orgs = len(orgs)
     nb_people = len(people)
     nb_places = len(places)
+    print("orgs: {}, people {}, places {}".format(nb_orgs, nb_people, nb_places))
     nb_lbl_orgs = int(nb_orgs*0.10) # using 10% of orgs to be labelled
     nb_lbl_people = int(nb_people*0.10) # 10% of labelled people
     nb_lbl_places = int(nb_places*0.10) # 10% of labelled places
