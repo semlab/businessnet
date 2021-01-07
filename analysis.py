@@ -76,7 +76,8 @@ if __name__ == "__main__":
     plt.figure(1)
     plt.xlabel("Named Entity Count")
     plt.ylabel("Entity's Node Degree")
-    plt.xscale('log')
+    #plt.xscale('log')
+    #plt.yscale('log')
     plt.scatter(X,Y, color="blue")
 
     # Degree histogram highest component

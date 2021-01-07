@@ -96,9 +96,26 @@ if __name__ == "__main__":
     nb_lbl_orgs = int(nb_orgs*0.10) # using 10% of orgs to be labelled
     nb_lbl_people = int(nb_people*0.10) # 10% of labelled people
     nb_lbl_places = int(nb_places*0.10) # 10% of labelled places
-    lbl_orgs = random.sample(orgs, nb_lbl_orgs)
-    lbl_people = random.sample(people, nb_lbl_people)
-    lbl_places = random.sample(places, nb_lbl_places)
+    #lbl_orgs = random.sample(orgs, nb_lbl_orgs)
+    #lbl_people = random.sample(people, nb_lbl_people)
+    #lbl_places = random.sample(places, nb_lbl_places)
+    offset = 0
+    #lbl_orgs = orgs[offset:nb_lbl_orgs+offset]
+    #lbl_people = people[offset:nb_lbl_people+offset]
+    #lbl_places = places[offset:nb_lbl_places+offset]
+
+    lbl_orgs = orgs[offset*nb_lbl_orgs:offset*nb_lbl_orgs+nb_lbl_orgs]
+    lbl_people = people[offset*nb_lbl_people:offset*nb_lbl_people+nb_lbl_people]
+    lbl_places = places[offset*nb_lbl_places:offset*nb_lbl_places+nb_lbl_places]
+    #
+    #orgs_parts = np.array_split(orgs, 10)
+    #people_parts = np.array_split(people, 10)
+    #places_parts = np.array_split(places, 10)
+    #lbl_orgs = orgs_parts[0]
+    #lbl_people = people_parts[0]
+    #lbl_places = places_parts[0]
+    #print(lbl_orgs)
+    #
     lbl_nodes = np.concatenate(( lbl_orgs, lbl_people, lbl_places), axis=0) 
     labels_lst = np.concatenate((
         np.full(nb_lbl_orgs, 0), # orgs are labelled 0
