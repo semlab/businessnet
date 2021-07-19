@@ -62,12 +62,21 @@ class CorpusPreproc:
 
 class ReuterSGMLPreproc(CorpusPreproc):
 
-    def reformat_nontag(self, text):
+    def __init__(self):
+        pass
+
+    def reformat_stock_abbr(self, text):
         """
-        Using [] to enclose non tag content like stocks name
+        Find and replace stock abbreviation enclosing 
+        to avoid parsing error
+        Using [[stockabbr]] to enclose non tag content like stocks name
         """
-        # regexp to find them and change
-        # &lt;NAME>  -> [NAME]
+        # &lt;NAME>  -> [[NAME]]
+        # abbr is the stock abbreviation
+        p = re.compile('&lt;(?<abbr>\w*)>')
+        formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        return formatted_text
+        
         
 
 
