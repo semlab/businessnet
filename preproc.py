@@ -62,6 +62,15 @@ class CorpusPreproc:
 
 class ReuterSGMLPreproc(CorpusPreproc):
 
+    def reformat_nontag(self, text):
+        """
+        Using [] to enclose non tag content like stocks name
+        """
+        # regexp to find them and change
+        # &lt;NAME>  -> [NAME]
+        
+
+
     def parse_sgml(self): 
         pass
 
