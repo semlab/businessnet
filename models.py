@@ -43,6 +43,21 @@ class Edge:
         self.rel_type = rel_type
         self.rel_label = rel_label
 
+
+    @staticmethod
+    def get_type(node1_type, node2_type):
+        s = {node1_type, node2_type}
+        if node1_type == node2_type:
+            return 0
+        elif s == {"ORG", "PEOPLE"}:
+            return 1
+        elif s == {"ORG", "GPE"}:
+            return 2
+        elif s == {"PEOPLE", "GPE"}:
+            return 3
+        else:
+            return -1
+
     def __str__(self):
         return str(self.__dict__)
 

@@ -82,9 +82,10 @@ class EdgeBuilder:
     """
     Build relationships from OpenIE output
     """
-    def __init__(self, nodelookup = None):
+    def __init__(self, nodelookup = None, nodes_dict = None):
         self.edges = []
         self.nodelookup = nodelookup
+        self.nodes_dict = nodes_dict
        
 
     def edges_build(self, inputpath, verbose=True):
@@ -139,8 +140,15 @@ class EdgeBuilder:
                     elif ent.string in extract_parts[2]:
                         ent2_id = EntityIdentifier.id_from_name(ent.string)
                 rel_label = extract_parts[1]
-                #TODO: Retrieve edge type trade/other id
-                rel_type = EdgeType.OTHER
+                if (self.nodes_dict is not None 
+                    and ent1_id is not None and ent2_id is not None
+                    and ent1_id in self.nodes_dict.keys() and ent2_id in self.nodes_dict.keys()):
+                    rel_type = Edge.get_type(
+                        self.nodes_dict[ent1_id].ent_type,
+                        self.nodes_dict[ent2_id].ent_type
+                    )
+                else: 
+                    rel_type = -1
                 if ent1_id is not None and ent2_id is not None and rel_type is not None:
                     edge = None
                     if nodelookup is not None:
@@ -273,7 +281,7 @@ def build_the_graph(inputfilepath, extractionfilepath, outputfilepath, verbose):
     #identifier.save_ents()
     nodes = identifier.nodes
     nodelookup = NodeLookup(nodes)
-    ebuilder = EdgeBuilder(nodelookup)
+    ebuilder = EdgeBuilder(nodelookup, identifier.nodes_dict)
     edges = ebuilder.edges_build(extractionfilepath)    
     if verbose:
         print("Building graph {} nodes, {} edges".format(len(nodes), len(edges)))
