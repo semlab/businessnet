@@ -60,6 +60,11 @@ class CorpusPreproc:
             outfile.write(self.processedtext)
 
 
+class ReuterSGMLPreproc(CorpusPreproc):
+
+    def parse_sgml(self): 
+        pass
+
 
 class ReuterPreproc(CorpusPreproc):
 
