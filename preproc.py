@@ -73,14 +73,13 @@ class ReuterSGMLPreproc(CorpusPreproc):
         """
         # &lt;NAME>  -> [[NAME]]
         # abbr is the stock abbreviation
-        p = re.compile('&lt;(?<abbr>\w*)>')
+        p = re.compile('&lt;(?P<abbr>\w*)>')
         formatted_text = p.sub(r'[[\g<abbr>]]', text)
         return formatted_text
-        
-        
 
 
     def parse_sgml(self): 
+        # TODO
         pass
 
 
