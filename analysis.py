@@ -78,7 +78,7 @@ if __name__ == "__main__":
     plt.ylabel("Entity's Node Degree")
     #plt.xscale('log')
     #plt.yscale('log')
-    plt.scatter(X,Y, color="blue")
+    plt.scatter(X,Y, color="blue", rasterized=True)
 
     # Degree histogram highest component
     degree_freq = np.array(nx.degree_histogram(Gmc)).astype('float')
