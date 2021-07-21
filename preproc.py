@@ -179,13 +179,19 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # abbr is the stock abbreviation
         p = re.compile('&lt;(?P<abbr>\w*)>')
         formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        p_htmlents = re.compile('&#[0-9]*;')
+        formatted_text = p_htmlents.sub(r'', formatted_text)
+        formatted_text = formatted_text.replace(
+                '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
+                '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
+        formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
+
         return formatted_text
 
 
     def parse_sgml(self, sgml_content): 
         # TODO
-        tree = ET.fromstring(sgml_content)
-        root = tree.getroot()
+        root = ET.fromstring(sgml_content)
         print(root.tag)
 
 
@@ -203,9 +209,9 @@ if __name__ == "__main__":
     #preproc.savetext()
 
     sgml_content = ""
-    with open("../../data/reuters21578/reut2-000.sgm") as f:
+    with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
         sgml_content = f.read()
 
     preproc = ReuterSGMLPreproc()
-    preproc.reformat_stock_abbr(sgml_content)
+    sgml_content = preproc.reformat_stock_abbr(sgml_content)
     preproc.parse_sgml(sgml_content)
