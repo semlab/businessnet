@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import re
 import spacy 
@@ -193,12 +195,17 @@ if __name__ == "__main__":
     local_datafolder= "data"
     nlp = LangModel.get_instance()
 
-    reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
-    preproc = ReuterPreproc(reuter_folder, 
-            outfilepath="{}/reuter_sentences.txt".format(local_datafolder))
-    print('formatting text...')
-    preproc.formattext()
-    preproc.savetext()
-    #print('Filtering sentences...')
-    #preproc.filter_sents(nlp)
+    #reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
+    #preproc = ReuterPreproc(reuter_folder, 
+    #        outfilepath="{}/reuter_sentences.txt".format(local_datafolder))
+    #print('formatting text...')
+    #preproc.formattext()
     #preproc.savetext()
+
+    sgml_content = ""
+    with open("../../data/reuters21578/reut2-000.sgm") as f:
+        sgml_content = f.read()
+
+    preproc = ReuterSGMLPreproc()
+    preproc.reformat_stock_abbr(sgml_content)
+    preproc.parse_sgml(sgml_content)
