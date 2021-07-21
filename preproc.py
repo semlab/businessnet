@@ -1,6 +1,7 @@
 import os
 import re
 import spacy 
+import xml.etree.ElementTree as ET
 from io import StringIO
 
 from lang import LangModel
@@ -60,27 +61,6 @@ class CorpusPreproc:
             outfile.write(self.processedtext)
 
 
-class ReuterSGMLPreproc(CorpusPreproc):
-
-    def __init__(self):
-        pass
-
-    def reformat_stock_abbr(self, text):
-        """
-        Find and replace stock abbreviation enclosing 
-        to avoid parsing error
-        Using [[stockabbr]] to enclose non tag content like stocks name
-        """
-        # &lt;NAME>  -> [[NAME]]
-        # abbr is the stock abbreviation
-        p = re.compile('&lt;(?P<abbr>\w*)>')
-        formatted_text = p.sub(r'[[\g<abbr>]]', text)
-        return formatted_text
-
-
-    def parse_sgml(self): 
-        # TODO
-        pass
 
 
 class ReuterPreproc(CorpusPreproc):
@@ -179,6 +159,33 @@ class ReuterPreproc(CorpusPreproc):
                     )) 
         file_content = '\n'.join(article_contents)    
         return file_content
+
+
+
+class ReuterSGMLPreproc(CorpusPreproc):
+
+    def __init__(self):
+        pass
+
+    def reformat_stock_abbr(self, text):
+        """
+        Find and replace stock abbreviation enclosing 
+        to avoid parsing error
+        Using [[stockabbr]] to enclose non tag content like stocks name
+        """
+        # &lt;NAME>  -> [[NAME]]
+        # abbr is the stock abbreviation
+        p = re.compile('&lt;(?P<abbr>\w*)>')
+        formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        return formatted_text
+
+
+    def parse_sgml(self, sgml_content): 
+        # TODO
+        tree = ET.fromstring(sgml_content)
+        root = tree.getroot()
+        print(root.tag)
+
 
 
 if __name__ == "__main__":
