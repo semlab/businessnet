@@ -166,6 +166,8 @@ class ReuterPreproc(CorpusPreproc):
 
 class ReuterSGMLPreproc(CorpusPreproc):
 
+    P_TABLE = re.compile("(  +.+\n){3,}")
+
     def __init__(self):
         pass
 
@@ -194,6 +196,14 @@ class ReuterSGMLPreproc(CorpusPreproc):
         formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
         return formatted_text
 
+
+    def find_table(self, text):
+        """Find 'formatted' table in the text"""
+        p_table = re.compile("(  +.+\n){3,}")
+        result = ReuterSGMLPreproc.P_TABLE.search(text)
+        return result
+        
+
     def align_sents(self, text):
         """Put one sentence per line"""
         # TODO remove table first
@@ -208,10 +218,15 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # TODO
         root = ET.fromstring(sgml_content)
         for body in root.iter("BODY"):
-            print(body.text)
-            lines = self.align_sents(body.text)
-            print(lines)
-            break
+            #print(body.text)
+            #lines = self.align_sents(body.text)
+            #print(lines)
+            #break
+            res = self.find_table(body.text)
+            if res:
+                print("\n\n")
+                print(res.group(0))
+                print("\n\n")
 
 
 
