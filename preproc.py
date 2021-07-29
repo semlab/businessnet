@@ -188,11 +188,25 @@ class ReuterSGMLPreproc(CorpusPreproc):
 
         return formatted_text
 
+    def align_sents(self, text):
+        """Put one sentence per line"""
+        # TODO remove table first
+        lines = text
+        lines = lines.replace(".\n", ".<br/>")
+        lines = lines.replace("\n", "")
+        lines = lines.replace("<br/>", "\n")
+        return lines
+
 
     def parse_sgml(self, sgml_content): 
         # TODO
         root = ET.fromstring(sgml_content)
-        print(root.tag)
+        for body in root.iter("BODY"):
+            print(body.text)
+            lines = self.align_sents(body.text)
+            print(lines)
+            break
+
 
 
 
