@@ -167,6 +167,8 @@ class ReuterPreproc(CorpusPreproc):
 class ReuterSGMLPreproc(CorpusPreproc):
 
     P_TABLE = re.compile("(  +.+\n){3,}")
+    P_STOCKID = re.compile('&lt;(?P<abbr>\w*)>')
+    P_HTMLENTS = re.compile('&#[0-9]*;')
 
     def __init__(self):
         pass
@@ -179,8 +181,10 @@ class ReuterSGMLPreproc(CorpusPreproc):
         """
         # &lt;NAME>  -> [[NAME]]
         # abbr is the stock abbreviation
-        p = re.compile('&lt;(?P<abbr>\w*)>')
-        formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        #p = re.compile('&lt;(?P<abbr>\w*)>')
+        #formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        formatted_text = ReuterSGMLPreproc.P_STOCKID.sub(r'[[\g<abbr>]]', 
+                text)
         return formatted_text
 
     def format_sgml(self, text):
@@ -188,8 +192,9 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # remove trailing 'Reuter' at the end of articles
         formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
         # remove unknown html entities
-        p_htmlents = re.compile('&#[0-9]*;')
-        formatted_text = p_htmlents.sub(r'', formatted_text)
+        #p_htmlents = re.compile('&#[0-9]*;')
+        #formatted_text = p_htmlents.sub(r'', formatted_text)
+        formatted_text = ReuterSGMLPreproc.P_HTMLENTS.sub(r'', formatted_text)
         formatted_text = formatted_text.replace(
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
