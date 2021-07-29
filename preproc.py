@@ -173,7 +173,7 @@ class ReuterSGMLPreproc(CorpusPreproc):
     def __init__(self):
         pass
 
-    def format_stock_abbr(self, text): 
+    def format_stockid(self, text): 
         """
         Find and replace stock abbreviation enclosing 
         to avoid parsing error
@@ -249,6 +249,6 @@ if __name__ == "__main__":
         sgml_content = f.read()
 
     pp = ReuterSGMLPreproc()
-    sgml_content = pp.format_stock_abbr(sgml_content)
+    sgml_content = pp.format_stockid(sgml_content)
     sgml_content = pp.format_sgml(sgml_content)
     pp.parse_sgml(sgml_content)
