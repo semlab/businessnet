@@ -169,18 +169,23 @@ class ReuterSGMLPreproc(CorpusPreproc):
     def __init__(self):
         pass
 
-    def reformat_stock_abbr(self, text): # TODO rename to format_sgml
+    def format_stock_abbr(self, text): 
         """
         Find and replace stock abbreviation enclosing 
         to avoid parsing error
         Using [[stockabbr]] to enclose non tag content like stocks name
         """
-        # remove trailing 'Reuter' at the end of articles
-        formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
         # &lt;NAME>  -> [[NAME]]
         # abbr is the stock abbreviation
         p = re.compile('&lt;(?P<abbr>\w*)>')
-        formatted_text = p.sub(r'[[\g<abbr>]]', formatted_text)
+        formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        return formatted_text
+
+    def format_sgml(self, text):
+        """Format the SGML file for better text manipulation"""
+        # remove trailing 'Reuter' at the end of articles
+        formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
+        # remove unknown html entities
         p_htmlents = re.compile('&#[0-9]*;')
         formatted_text = p_htmlents.sub(r'', formatted_text)
         formatted_text = formatted_text.replace(
@@ -227,6 +232,7 @@ if __name__ == "__main__":
     with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
         sgml_content = f.read()
 
-    preproc = ReuterSGMLPreproc()
-    sgml_content = preproc.reformat_stock_abbr(sgml_content)
-    preproc.parse_sgml(sgml_content)
+    pp = ReuterSGMLPreproc()
+    sgml_content = pp.format_stock_abbr(sgml_content)
+    sgml_content = pp.format_sgml(sgml_content)
+    pp.parse_sgml(sgml_content)
