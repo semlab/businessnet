@@ -169,23 +169,24 @@ class ReuterSGMLPreproc(CorpusPreproc):
     def __init__(self):
         pass
 
-    def reformat_stock_abbr(self, text):
+    def reformat_stock_abbr(self, text): # TODO rename to format_sgml
         """
         Find and replace stock abbreviation enclosing 
         to avoid parsing error
         Using [[stockabbr]] to enclose non tag content like stocks name
         """
+        # remove trailing 'Reuter' at the end of articles
+        formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
         # &lt;NAME>  -> [[NAME]]
         # abbr is the stock abbreviation
         p = re.compile('&lt;(?P<abbr>\w*)>')
-        formatted_text = p.sub(r'[[\g<abbr>]]', text)
+        formatted_text = p.sub(r'[[\g<abbr>]]', formatted_text)
         p_htmlents = re.compile('&#[0-9]*;')
         formatted_text = p_htmlents.sub(r'', formatted_text)
         formatted_text = formatted_text.replace(
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
         formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
-
         return formatted_text
 
     def align_sents(self, text):
