@@ -206,19 +206,11 @@ class ReuterSGMLPreproc(CorpusPreproc):
 
     def remove_tables(self, text):
         """Remove table from the text (plain text)"""
-        #res = self.find_table(body.text)
-        #if res:
-        #    print("\n\n")
-        #    print(res.group(0))
-        #    print("\n\n")
         return P_TABLE.sub('\n', text)
-
-
         
 
     def align_sents(self, text):
         """Put one sentence per line"""
-        # TODO remove table first
         lines = text
         lines = lines.replace(".\n", ".<br/>")
         lines = lines.replace("\n", " ")
@@ -226,21 +218,20 @@ class ReuterSGMLPreproc(CorpusPreproc):
         return lines
 
 
-    def parse_sgml(self, sgml_content): 
-        # TODO
-        root = ET.fromstring(sgml_content)
+    def sgml_to_text(self, sgml): 
+        """
+        :param sgml: xml friendly formatted sgm file content
+        :type sgml: str
+        :returns: a one sentence per line string
+        """
+        text_content = []
+        root = ET.fromstring(sgml)
         for body in root.iter("BODY"):
-            #res = self.find_table(body.text)
-            #if res:
-            #    print("\n\n")
-            #    print(res.group(0))
-            #    print("\n\n")
-            print(body.text)
-            lines = self.align_sents(body.text)
-            print(lines)
-            #break
-
-
+            text = self.remove_tables(body.text)
+            text = self.align_sents(text)
+            text = self.align_sents(text)
+            text_content.append(text)
+        return "\n\n".join(text_content)
 
 
 if __name__ == "__main__":
@@ -255,6 +246,7 @@ if __name__ == "__main__":
     #preproc.formattext()
     #preproc.savetext()
 
+    # TODO save sgml as temp files
     sgml_content = ""
     #with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
     with open("../../data/reuters21578/reut2-010.sgm") as f:
@@ -263,4 +255,5 @@ if __name__ == "__main__":
     pp = ReuterSGMLPreproc()
     sgml_content = pp.format_stockid(sgml_content)
     sgml_content = pp.format_sgml(sgml_content)
-    pp.parse_sgml(sgml_content)
+    text = pp.sgml_to_text(sgml_content)
+    print(text)
