@@ -190,7 +190,7 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # remove trailing 'Reuter' at the end of articles
         formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
         # remove unknown html entities
-        formatted_text = ReuterSGMLPreproc.P_HTMLENTS.sub(r'', formatted_text)
+        formatted_text = ReuterSGMLPreproc.P_HTMLENTS.sub(r'',formatted_text)
         formatted_text = formatted_text.replace(
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
@@ -206,7 +206,7 @@ class ReuterSGMLPreproc(CorpusPreproc):
 
     def remove_tables(self, text):
         """Remove table from the text (plain text)"""
-        return P_TABLE.sub('\n', text)
+        return ReuterSGMLPreproc.P_TABLE.sub('\n', text)
         
 
     def align_sents(self, text):
