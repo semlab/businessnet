@@ -200,7 +200,6 @@ class ReuterSGMLPreproc(CorpusPreproc):
 
     def find_table(self, text):
         """Find 'formatted' table in the text"""
-        p_table = re.compile("(  +.+\n){3,}")
         result = ReuterSGMLPreproc.P_TABLE.search(text)
         return result
         
