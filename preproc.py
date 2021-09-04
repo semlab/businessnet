@@ -185,8 +185,11 @@ class ReuterSGMLPreproc(CorpusPreproc):
                 text)
         return formatted_text
 
+
     def format_sgml(self, text):
-        """Format the SGML file for better text manipulation"""
+        # TODO change function name from to 'sgm_to_sgml'
+        # TODO change 'text' variable name to 'sgm'
+        """Format the SGML file making it xml parser friendly"""
         # remove trailing 'Reuter' at the end of articles
         formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
         # remove unknown html entities
@@ -196,6 +199,27 @@ class ReuterSGMLPreproc(CorpusPreproc):
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
         formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
         return formatted_text
+
+
+    def save_sgml(self, sgml, filename, folder="."):
+        with open(os.path.join(folder, filename)) as f:
+            f.write(sgml)
+
+
+    def format_dataset(self, infolder, outfolder):
+        for filename in os.listdir(infolder):
+            if filename.endswith(".sgm"):
+               sgm = ""
+               with open(os.path.join(infolder, filename), 'r') as f:
+                   try:
+                       sgm = f.read() 
+                   except UnicodeDecodeError:
+                       print("Error decoding {}. Skipping".format(filename))
+                       continue
+               sgml = self.format_sgml(sgm)
+               outfilename = filename.replace(".sgm", ".sgml")
+               with open(os.path.join(outfolder, outfilename), 'w') as f:
+                   f.write(sgml)
 
 
     def find_table(self, text):
@@ -252,8 +276,12 @@ if __name__ == "__main__":
     with open("../../data/reuters21578/reut2-010.sgm") as f:
         sgml_content = f.read()
 
+    infolder = "../../data/reuters21578/"
+    outfolder = "./data/"
+
     pp = ReuterSGMLPreproc()
-    sgml_content = pp.format_stockid(sgml_content)
-    sgml_content = pp.format_sgml(sgml_content)
-    text = pp.sgml_to_text(sgml_content)
-    print(text)
+    pp.format_dataset(infolder, outfolder)
+    #sgml_content = pp.format_stockid(sgml_content)
+    #sgml_content = pp.format_sgml(sgml_content)
+    #text = pp.sgml_to_text(sgml_content)
+    #print(text)
