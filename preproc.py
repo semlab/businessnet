@@ -202,6 +202,18 @@ class ReuterSGMLPreproc(CorpusPreproc):
         """Find 'formatted' table in the text"""
         result = ReuterSGMLPreproc.P_TABLE.search(text)
         return result
+
+
+    def remove_tables(self, text):
+        """Remove table from the text (plain text)"""
+        #res = self.find_table(body.text)
+        #if res:
+        #    print("\n\n")
+        #    print(res.group(0))
+        #    print("\n\n")
+        return P_TABLE.sub('\n', text)
+
+
         
 
     def align_sents(self, text):
@@ -209,7 +221,7 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # TODO remove table first
         lines = text
         lines = lines.replace(".\n", ".<br/>")
-        lines = lines.replace("\n", "")
+        lines = lines.replace("\n", " ")
         lines = lines.replace("<br/>", "\n")
         return lines
 
@@ -218,15 +230,15 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # TODO
         root = ET.fromstring(sgml_content)
         for body in root.iter("BODY"):
-            #print(body.text)
-            #lines = self.align_sents(body.text)
-            #print(lines)
+            #res = self.find_table(body.text)
+            #if res:
+            #    print("\n\n")
+            #    print(res.group(0))
+            #    print("\n\n")
+            print(body.text)
+            lines = self.align_sents(body.text)
+            print(lines)
             #break
-            res = self.find_table(body.text)
-            if res:
-                print("\n\n")
-                print(res.group(0))
-                print("\n\n")
 
 
 
@@ -244,7 +256,8 @@ if __name__ == "__main__":
     #preproc.savetext()
 
     sgml_content = ""
-    with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
+    #with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
+    with open("../../data/reuters21578/reut2-010.sgm") as f:
         sgml_content = f.read()
 
     pp = ReuterSGMLPreproc()
