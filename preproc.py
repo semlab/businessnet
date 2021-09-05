@@ -194,74 +194,86 @@ class ReuterSGMDoc():
         """
         # &lt;NAME>  -> [[NAME]]
         # abbr is the stock abbreviation
-        formatted_text = ReuterSGMLPreproc.P_STOCKID.sub(r'[[\g<abbr>]]', 
+        formatted_text = ReuterSGMDoc.P_STOCKID.sub(r'[[\g<abbr>]]', 
                 text)
         return formatted_text 
 
 
     def find_table(self, text):
         """Find 'formatted' table in the text"""
-        result = ReuterSGMLPreproc.P_TABLE.search(text)
+        result = ReuterSGMDoc.P_TABLE.search(text)
         return result
 
 
-    def laod_sgm(self, filepath):
-        with open(filepath, 'r'):
-            self.sgm = f.read()
+    def load_sgm(self, filepath):
+        with open(filepath, 'r') as f:
+            try:
+                self.sgm = f.read()
+            except UnicodeDecodeError:
+                print("Error decoding {}.".format(filepath))
+                self.sgm = None
 
 
     def laod_sgml(self, filepath):
-        with open(filepath, 'r'):
+        with open(filepath, 'r') as f:
             self.sgml = f.read()
 
 
-    def save_sgml(self, filename, folder="."):
+    def save_sgml(self, filepath):
         if self.sgml is None:
             self.to_sgml()
-        with open(os.path.join(folder, filename), 'w') as f:
-            f.write(self.sgml)
+        with open(filepath, 'w') as f:
+            if self.sgml is not None:
+                f.write(self.sgml)
 
 
-    def save_txt(self, filename, folder="."):
+    def save_txt(self, filepath):
         if self.txt is None:
             self.to_txt()
-        with open(os.path.join(folder, filename), 'w') as f:
-            f.write(self.txt)
+        with open(filepath, 'w') as f:
+            if self.txt is not None:
+                f.write(self.txt)
 
 
     def remove_tables(self, text):
         """Remove table from the text (plain text)"""
-        return ReuterSGMLPreproc.P_TABLE.sub('\n', text)
+        return ReuterSGMDoc.P_TABLE.sub('\n', text)
         
 
+    #def format_sgml(self, text):
     def to_sgml(self):
+        # TODO change function name from to 'sgm_to_sgml'
+        # TODO change 'text' variable name to 'sgm'
         """Format the SGML file making it xml parser friendly"""
         if self.sgml is not None:
             return self.sgml
         if self.sgm is None:
-            print('Warning: sgm_content is None')
+            print('Warning: no content to format')
             return None
-        formatted_text = self.format_stokid(self.sgm)
+        formatted_text = self.format_stockid(self.sgm)
         # remove trailing 'Reuter' at the end of articles
         formatted_text = formatted_text.replace("Reuter\n&#3;</BODY>", 
             "\n</BODY>")
         # remove unknown html entities
-        formatted_text = ReuterSGMLPreproc.P_HTMLENTS.sub(r'',formatted_text)
+        formatted_text = ReuterSGMDoc.P_HTMLENTS.sub(r'',formatted_text)
         formatted_text = formatted_text.replace(
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
         formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
-        self.sgml
+        self.sgml = formatted_text
         return self.sgml
 
 
     #def sgml_to_text(self, sgml): 
-    def to_text(self): 
+    def to_txt(self): 
         """
         :param sgml: xml friendly formatted sgm file content
         :type sgml: str
         :returns: a one sentence per line string
         """
+        if self.sgm is None and self.sgml is None:
+            print('Warning: no content to format')
+            return None
         if self.txt is not None:
            return self.txt
         if self.sgml is None:
@@ -276,27 +288,50 @@ class ReuterSGMDoc():
         return self.txt
 
 
+
+class ReuterDSConverter():
+    """ Reuter Data set Converter
+    Manage the convertion of the dataset from one format to another.
+    """
+
+    SGM_FORMAT = 'sgm'
+    SGML_FORMAT = 'sgml'
+    TXT_FORMAT = 'txt'
+
+    def __init__(self, infolder=".", outfolder="."):
+        self.infolder = infolder
+        self.outfolder = outfolder
+
     # TODO set it outside the object on its own
-    def format_dataset(self, infolder, outfolder):
-        for filename in os.listdir(infolder):
-            if filename.endswith(".sgm"):
-               sgm = ""
-               with open(os.path.join(infolder, filename), 'r') as f:
-                   try:
-                       sgm = f.read() 
-                   except UnicodeDecodeError:
-                       print("Error decoding {}. Skipping".format(filename))
-                       continue
-               sgml = self.format_sgml(sgm)
-               outfilename = filename.replace(".sgm", ".sgml")
-               with open(os.path.join(outfolder, outfilename), 'w') as f:
-                   f.write(sgml)
+    #def format_dataset(self):
+    #def sgm_to_sgml(self):
+    def convert(self, informat, outformat):
+        if informat not in [self.SGM_FORMAT, self.SGML_FORMAT]: 
+              raise ValueError("Possible input format are: {}, {}", 
+                  self.SGM_FORMAT, self.SGML_FORMAT)
+        if outformat not in [self.SGML_FORMAT, self.TXT_FORMAT]:
+              raise ValueError("Possible output format are: {}, {}",
+                  self.SGML_FORMAT, self.TXT_FORMAT)
+        for filename in os.listdir(self.infolder):
+            if filename.endswith("."+informat):
+               infilepath = os.path.join(self.infolder, filename)
+               sgmdoc = ReuterSGMDoc() 
+               if informat == self.SGM_FORMAT:
+                   sgmdoc.load_sgm(infilepath)
+               elif informat == self.SGML_FORMAT:
+                   sgmdoc.load_sgml(infilepath)
+               outfilename = filename.replace("."+informat, "."+outformat)
+               outfilepath = os.path.join(outfolder, outfilename)
+               if outformat == self.SGML_FORMAT:
+                   sgmdoc.save_sgml(outfilepath)
+               elif outformat == self.TXT_FORMAT:
+                   sgmdoc.save_txt(outfilepath)
 
 
 if __name__ == "__main__":
-    datafolder = "../../data"
-    local_datafolder= "data"
-    nlp = LangModel.get_instance()
+    #datafolder = "../../data"
+    #local_datafolder= "data"
+    #nlp = LangModel.get_instance()
 
     #reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
     #preproc = ReuterPreproc(reuter_folder, 
@@ -306,16 +341,20 @@ if __name__ == "__main__":
     #preproc.savetext()
 
     # TODO save sgml as temp files
-    sgml_content = ""
+    #sgml_content = ""
     #with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
-    with open("../../data/reuters21578/reut2-010.sgm") as f:
-        sgml_content = f.read()
+    #with open("../../data/reuters21578/reut2-010.sgm") as f:
+    #    sgml_content = f.read()
 
     infolder = "../../data/reuters21578/"
     outfolder = "./data/"
 
-    pp = ReuterSGMLPreproc()
-    pp.format_dataset(infolder, outfolder)
+    converter = ReuterDSConverter(infolder, outfolder)
+    converter.convert(ReuterDSConverter.SGM_FORMAT, 
+        ReuterDSConverter.TXT_FORMAT)
+
+    #pp = ReuterSGMLPreproc()
+    #pp.format_dataset(infolder, outfolder)
     #sgml_content = pp.format_stockid(sgml_content)
     #sgml_content = pp.format_sgml(sgml_content)
     #text = pp.sgml_to_text(sgml_content)
