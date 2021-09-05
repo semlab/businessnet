@@ -164,14 +164,27 @@ class ReuterPreproc(CorpusPreproc):
 
 
 
-class ReuterSGMLPreproc(CorpusPreproc):
+#class ReuterSGMLPreproc(CorpusPreproc):
+class ReuterSGMDoc():
 
     P_TABLE = re.compile("(  +.+\n){3,}")
     P_STOCKID = re.compile('&lt;(?P<abbr>\w*)>')
     P_HTMLENTS = re.compile('&#[0-9]*;')
 
-    def __init__(self):
-        pass
+    def __init__(self, sgm_content=None):
+        self.sgm = sgm_content
+        self.sgml = None
+        self.txt = None
+
+
+    def align_sents(self, text):
+        """Put one sentence per line"""
+        lines = text
+        lines = lines.replace(".\n", ".<br/>")
+        lines = lines.replace("\n", " ")
+        lines = lines.replace("<br/>", "\n")
+        return lines
+
 
     def format_stockid(self, text): 
         """
@@ -183,29 +196,87 @@ class ReuterSGMLPreproc(CorpusPreproc):
         # abbr is the stock abbreviation
         formatted_text = ReuterSGMLPreproc.P_STOCKID.sub(r'[[\g<abbr>]]', 
                 text)
-        return formatted_text
+        return formatted_text 
 
 
-    def format_sgml(self, text):
-        # TODO change function name from to 'sgm_to_sgml'
-        # TODO change 'text' variable name to 'sgm'
+    def find_table(self, text):
+        """Find 'formatted' table in the text"""
+        result = ReuterSGMLPreproc.P_TABLE.search(text)
+        return result
+
+
+    def laod_sgm(self, filepath):
+        with open(filepath, 'r'):
+            self.sgm = f.read()
+
+
+    def laod_sgml(self, filepath):
+        with open(filepath, 'r'):
+            self.sgml = f.read()
+
+
+    def save_sgml(self, filename, folder="."):
+        if self.sgml is None:
+            self.to_sgml()
+        with open(os.path.join(folder, filename), 'w') as f:
+            f.write(self.sgml)
+
+
+    def save_txt(self, filename, folder="."):
+        if self.txt is None:
+            self.to_txt()
+        with open(os.path.join(folder, filename), 'w') as f:
+            f.write(self.txt)
+
+
+    def remove_tables(self, text):
+        """Remove table from the text (plain text)"""
+        return ReuterSGMLPreproc.P_TABLE.sub('\n', text)
+        
+
+    def to_sgml(self):
         """Format the SGML file making it xml parser friendly"""
+        if self.sgml is not None:
+            return self.sgml
+        if self.sgm is None:
+            print('Warning: sgm_content is None')
+            return None
+        formatted_text = self.format_stokid(self.sgm)
         # remove trailing 'Reuter' at the end of articles
-        formatted_text = text.replace("Reuter\n&#3;</BODY>", "\n</BODY>")
+        formatted_text = formatted_text.replace("Reuter\n&#3;</BODY>", 
+            "\n</BODY>")
         # remove unknown html entities
         formatted_text = ReuterSGMLPreproc.P_HTMLENTS.sub(r'',formatted_text)
         formatted_text = formatted_text.replace(
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">',
                 '<!DOCTYPE lewis SYSTEM "lewis.dtd">\n<SGML>')
         formatted_text = '\n'.join([formatted_text, "\n</SGML>"])
-        return formatted_text
+        self.sgml
+        return self.sgml
 
 
-    def save_sgml(self, sgml, filename, folder="."):
-        with open(os.path.join(folder, filename)) as f:
-            f.write(sgml)
+    #def sgml_to_text(self, sgml): 
+    def to_text(self): 
+        """
+        :param sgml: xml friendly formatted sgm file content
+        :type sgml: str
+        :returns: a one sentence per line string
+        """
+        if self.txt is not None:
+           return self.txt
+        if self.sgml is None:
+            self.sgml = self.to_sgml()
+        text_content = []
+        root = ET.fromstring(self.sgml)
+        for body in root.iter("BODY"):
+            text = self.remove_tables(body.text)
+            text = self.align_sents(text)
+            text_content.append(text)
+        self.txt =  "\n\n".join(text_content)
+        return self.txt
 
 
+    # TODO set it outside the object on its own
     def format_dataset(self, infolder, outfolder):
         for filename in os.listdir(infolder):
             if filename.endswith(".sgm"):
@@ -220,42 +291,6 @@ class ReuterSGMLPreproc(CorpusPreproc):
                outfilename = filename.replace(".sgm", ".sgml")
                with open(os.path.join(outfolder, outfilename), 'w') as f:
                    f.write(sgml)
-
-
-    def find_table(self, text):
-        """Find 'formatted' table in the text"""
-        result = ReuterSGMLPreproc.P_TABLE.search(text)
-        return result
-
-
-    def remove_tables(self, text):
-        """Remove table from the text (plain text)"""
-        return ReuterSGMLPreproc.P_TABLE.sub('\n', text)
-        
-
-    def align_sents(self, text):
-        """Put one sentence per line"""
-        lines = text
-        lines = lines.replace(".\n", ".<br/>")
-        lines = lines.replace("\n", " ")
-        lines = lines.replace("<br/>", "\n")
-        return lines
-
-
-    def sgml_to_text(self, sgml): 
-        """
-        :param sgml: xml friendly formatted sgm file content
-        :type sgml: str
-        :returns: a one sentence per line string
-        """
-        text_content = []
-        root = ET.fromstring(sgml)
-        for body in root.iter("BODY"):
-            text = self.remove_tables(body.text)
-            text = self.align_sents(text)
-            text = self.align_sents(text)
-            text_content.append(text)
-        return "\n\n".join(text_content)
 
 
 if __name__ == "__main__":
