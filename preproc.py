@@ -164,7 +164,6 @@ class ReuterPreproc(CorpusPreproc):
 
 
 
-#class ReuterSGMLPreproc(CorpusPreproc):
 class ReuterSGMDoc():
 
     P_TABLE = re.compile("(  +.+\n){3,}")
@@ -240,10 +239,7 @@ class ReuterSGMDoc():
         return ReuterSGMDoc.P_TABLE.sub('\n', text)
         
 
-    #def format_sgml(self, text):
     def to_sgml(self):
-        # TODO change function name from to 'sgm_to_sgml'
-        # TODO change 'text' variable name to 'sgm'
         """Format the SGML file making it xml parser friendly"""
         if self.sgml is not None:
             return self.sgml
@@ -264,7 +260,6 @@ class ReuterSGMDoc():
         return self.sgml
 
 
-    #def sgml_to_text(self, sgml): 
     def to_txt(self): 
         """
         :param sgml: xml friendly formatted sgm file content
@@ -302,9 +297,6 @@ class ReuterDSConverter():
         self.infolder = infolder
         self.outfolder = outfolder
 
-    # TODO set it outside the object on its own
-    #def format_dataset(self):
-    #def sgm_to_sgml(self):
     def convert(self, informat, outformat):
         if informat not in [self.SGM_FORMAT, self.SGML_FORMAT]: 
               raise ValueError("Possible input format are: {}, {}", 
@@ -329,33 +321,9 @@ class ReuterDSConverter():
 
 
 if __name__ == "__main__":
-    #datafolder = "../../data"
-    #local_datafolder= "data"
-    #nlp = LangModel.get_instance()
-
-    #reuter_folder = "{}/reuters21578-mld/reuters21578/".format(datafolder)
-    #preproc = ReuterPreproc(reuter_folder, 
-    #        outfilepath="{}/reuter_sentences.txt".format(local_datafolder))
-    #print('formatting text...')
-    #preproc.formattext()
-    #preproc.savetext()
-
-    # TODO save sgml as temp files
-    #sgml_content = ""
-    #with open("../../data/reuters21578/reuters21578/reut2-010.sgm") as f:
-    #with open("../../data/reuters21578/reut2-010.sgm") as f:
-    #    sgml_content = f.read()
-
     infolder = "../../data/reuters21578/"
     outfolder = "./data/"
-
     converter = ReuterDSConverter(infolder, outfolder)
     converter.convert(ReuterDSConverter.SGM_FORMAT, 
         ReuterDSConverter.TXT_FORMAT)
 
-    #pp = ReuterSGMLPreproc()
-    #pp.format_dataset(infolder, outfolder)
-    #sgml_content = pp.format_stockid(sgml_content)
-    #sgml_content = pp.format_sgml(sgml_content)
-    #text = pp.sgml_to_text(sgml_content)
-    #print(text)
