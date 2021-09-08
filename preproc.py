@@ -64,6 +64,11 @@ class ReuterSGMDoc():
             self.sgml = f.read()
 
 
+    def laod_txt(self, filepath):
+        with open(filepath, 'r') as f:
+            self.txt = f.read()
+
+
     def save_sgml(self, filepath):
         if self.sgml is None:
             self.to_sgml()
@@ -108,8 +113,6 @@ class ReuterSGMDoc():
 
     def to_txt(self): 
         """
-        :param sgml: xml friendly formatted sgm file content
-        :type sgml: str
         :returns: a one sentence per line string
         """
         if self.sgm is None and self.sgml is None:
@@ -128,6 +131,24 @@ class ReuterSGMDoc():
         self.txt =  "\n\n".join(text_content)
         return self.txt
 
+
+    def solve_coref(self):
+        """Solve the coreference on the text content"""
+        # TODO
+        pass
+
+
+    def sents_iterator(self):
+        # TODO can be written as actual generator/iterator
+        text = self.to_txt()
+        nlp = LangModel.get_instance()
+        doc = nlp(text)
+        tokens_list = []
+        for sent in doc.sents:
+            tokens_list = [tk.text.lower() for tk in sent 
+                if not tk.is_stop and tk.is_alpha and len(tk.text) > 1]
+            tokens_list.append(tokens)
+        return tokens_list
 
 
 class ReuterDSConverter():
@@ -166,10 +187,16 @@ class ReuterDSConverter():
                    sgmdoc.save_txt(outfilepath)
 
 
+
+
+
+
 if __name__ == "__main__":
     infolder = "../../data/reuters21578/"
     outfolder = "./data/"
     converter = ReuterDSConverter(infolder, outfolder)
     converter.convert(ReuterDSConverter.SGM_FORMAT, 
         ReuterDSConverter.TXT_FORMAT)
+
+    
 
