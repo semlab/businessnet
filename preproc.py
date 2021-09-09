@@ -137,8 +137,8 @@ class ReuterSGMDoc():
         # TODO
         pass
 
-
-    def sents_iterator(self):
+    # Actually useless
+    def sents_tokens(self):
         # TODO can be written as actual generator/iterator
         text = self.to_txt()
         nlp = LangModel.get_instance()
