@@ -111,8 +111,9 @@ class ReuterSGMDoc():
         return self.sgml
 
 
-    def to_txt(self): 
+    def to_txt(self, sovle_coref=False): 
         """
+        :parameter solve_coref: should the coreference be solved 
         :returns: a one sentence per line string
         """
         if self.sgm is None and self.sgml is None:
@@ -129,6 +130,8 @@ class ReuterSGMDoc():
             text = self.align_sents(text)
             text_content.append(text)
         self.txt =  "\n\n".join(text_content)
+        if solve_coref:
+            self.txt = self.solve_coref()
         return self.txt
 
 
