@@ -4,7 +4,6 @@ import os
 import re
 import spacy 
 import xml.etree.ElementTree as ET
-import neuralcoref
 from io import StringIO
 
 from lang import LangModel
@@ -136,7 +135,6 @@ class ReuterSGMDoc():
     def solve_coref(self):
         """Solve the coreference on the text content"""
         nlp = LangModel.get_instance()
-        neuralcoref.add_to_pipe(nlp)
         text = self.to_txt()
         doc = nlp(text)
         # TODO continue lol
