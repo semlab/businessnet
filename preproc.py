@@ -137,7 +137,16 @@ class ReuterSGMDoc():
         nlp = LangModel.get_instance()
         text = self.to_txt()
         doc = nlp(text)
-        # TODO continue lol
+        tok_list = list(token.text_with_ws for token in doc)
+        for cluster in doc._.coref_clusters:
+            cluster_main_words = set(cluster.main.text.split(' '))
+            for coref in cluster:
+                if coref != cluster.main.text and bool(set(coref.text.split(' ')).intersection(cluster_main_words)) == False:
+                    tok_list[coref.start] = cluster.main.text + doc[coref.end - 1].whitespace_
+                    for i in range(coref.start + 1, coref.end):
+                        tok_list[i] = ""
+        self.txt = "".join(tok_list)
+        return self.txt
 
     # Actually useless
     def sents_tokens(self):
