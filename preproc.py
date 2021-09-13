@@ -182,7 +182,7 @@ class ReuterDSConverter():
         self.infolder = infolder
         self.outfolder = outfolder
 
-    def convert(self, informat, outformat):
+    def convert(self, informat, outformat, solve_coref=False):
         if informat not in [self.SGM_FORMAT, self.SGML_FORMAT]: 
               raise ValueError("Possible input format are: {}, {}", 
                   self.SGM_FORMAT, self.SGML_FORMAT)
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     outfolder = "./data/"
     converter = ReuterDSConverter(infolder, outfolder)
     converter.convert(ReuterDSConverter.SGM_FORMAT, 
-        ReuterDSConverter.TXT_FORMAT)
+        ReuterDSConverter.TXT_FORMAT, solve_coref=True)
 
     
 
