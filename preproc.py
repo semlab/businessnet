@@ -35,12 +35,11 @@ class ReuterSGMDoc():
         """
         Find and replace stock abbreviation enclosing 
         to avoid parsing error
-        Using [[stockabbr]] to enclose non tag content like stocks name
+        Using (stockabbr) to enclose non tag content like stocks name
         """
-        # &lt;NAME>  -> [[NAME]]
+        # &lt;NAME>  -> (NAME)
         # abbr is the stock abbreviation
-        formatted_text = ReuterSGMDoc.P_STOCKID.sub(r'[[\g<abbr>]]', 
-                text)
+        formatted_text = ReuterSGMDoc.P_STOCKID.sub(r'(\g<abbr>)', text)
         return formatted_text 
 
 
@@ -77,9 +76,9 @@ class ReuterSGMDoc():
                 f.write(self.sgml)
 
 
-    def save_txt(self, filepath):
+    def save_txt(self, filepath, solve_coref=False):
         if self.txt is None:
-            self.to_txt()
+            self.to_txt(solve_coref)
         with open(filepath, 'w') as f:
             if self.txt is not None:
                 f.write(self.txt)
@@ -111,7 +110,7 @@ class ReuterSGMDoc():
         return self.sgml
 
 
-    def to_txt(self, sovle_coref=False): 
+    def to_txt(self, solve_coref=False): 
         """
         :parameter solve_coref: should the coreference be solved 
         :returns: a one sentence per line string
@@ -127,7 +126,12 @@ class ReuterSGMDoc():
         root = ET.fromstring(self.sgml)
         for body in root.iter("BODY"):
             text = self.remove_tables(body.text)
+            if (text.startswith("Shr ") or text.startswith("Oper ")  
+                    or text.startswith("Qtly ") or text.startswith("Qtr ") 
+                    or text.startswith("Qtrly ")): #TODO use regexp
+                continue
             text = self.align_sents(text)
+            text = text.replace("    ", "") #TODO use regexp (2+)space
             text_content.append(text)
         self.txt =  "\n\n".join(text_content)
         if solve_coref:
