@@ -4,7 +4,7 @@ class NodeType:
     ORG = "ORG"
     PERSON = "PERSON"
     PLACE = "GPE"
-    Set = { NodeType.ORG, NodeType.PERSON, NodeType.PLACE }
+    Set = {"ORG", "PERSON", "GPE"}
     #Set = [NodeType.ORG, NodeType.PERSON, NodeType.PLACE}"ORG", "PERSON", "GPE"]
 
 

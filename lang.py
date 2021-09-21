@@ -19,4 +19,4 @@ class LangModel:
             print('Loading spacy model')
             LangModel.__instance = spacy.load("en_core_web_sm")
             LangModel.__instance.max_length = 20000000
-            neuralcoref.add_to_pipe(nlp)
+            neuralcoref.add_to_pipe(LangModel.__instance)
